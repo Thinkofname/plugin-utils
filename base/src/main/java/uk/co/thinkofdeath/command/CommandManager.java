@@ -108,7 +108,7 @@ public class CommandManager {
                 continue;
             }
             method.setAccessible(true); // It may be private
-            if (method.getParameterCount() < 1) {
+            if (method.getParameterTypes().length < 1) {
                 // No way to actually check if the argument is a caller
                 // just that it exists since anything could technically
                 // be caller
