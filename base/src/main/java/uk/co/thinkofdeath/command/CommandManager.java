@@ -318,11 +318,18 @@ public class CommandManager {
         return new ArrayList<>();
     }
 
+    /**
+     * Defines a parser for the type class. The parser will be called
+     * when the class is encountered as a parameter to a method.
+     *
+     * @param clazz The class to match this parser to
+     * @param parser The parser to use for this type
+     */
     public void addParser(Class<?> clazz, ArgumentParser parser) {
         parsers.put(clazz, parser);
     }
 
-    // Split by spaces unless the argument is quoted
+    // Split by spaces unless the argument is quoted with `
     private String[] split(String command) {
         Matcher matcher = splitter.matcher(command);
         ArrayList<String> args = new ArrayList<>();
@@ -337,6 +344,8 @@ public class CommandManager {
         return args.toArray(new String[args.size()]);
     }
 
+    // Helper for converting between split arguments and joined arguments
+    // format
     private String join(String name, String... args) {
         StringBuilder out = new StringBuilder(name);
         for (String arg : args) {
