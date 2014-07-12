@@ -304,7 +304,6 @@ public class CommandManager {
             }
         }
         if (lastError == null) {
-            // Absolutely
             lastError = "Unknown command";
         }
         throw new CommandException(lastError);
