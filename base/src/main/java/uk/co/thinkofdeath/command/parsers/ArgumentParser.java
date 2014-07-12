@@ -24,7 +24,7 @@ package uk.co.thinkofdeath.command.parsers;
  * with the message set to the reason that should be
  * passed to the executor
  */
-public interface ArgumentParser {
+public interface ArgumentParser<T> {
 
     /**
      * Attempts to convert the argument into the type
@@ -37,5 +37,5 @@ public interface ArgumentParser {
      *         If the parser is unable to
      *         parse the argument
      */
-    Object parse(String argument) throws ParserException;
+    T parse(String argument) throws ParserException;
 }

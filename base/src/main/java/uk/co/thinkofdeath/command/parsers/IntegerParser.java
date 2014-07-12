@@ -16,9 +16,9 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
-public class IntegerParser implements ArgumentParser {
+public class IntegerParser implements ArgumentParser<Integer> {
     @Override
-    public Object parse(String argument) throws ParserException {
+    public Integer parse(String argument) throws ParserException {
         try {
             return Integer.valueOf(argument);
         } catch (NumberFormatException e) {

@@ -16,9 +16,9 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
-public class StringParser implements ArgumentParser {
+public class StringParser implements ArgumentParser<String> {
     @Override
-    public Object parse(String argument) throws ParserException {
+    public String parse(String argument) throws ParserException {
         return argument;
     }
 }
