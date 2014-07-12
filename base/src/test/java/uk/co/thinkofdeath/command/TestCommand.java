@@ -220,6 +220,18 @@ public class TestCommand {
         commandManager.execute("hello", "world testing time set 55");
     }
 
+    @Test(expected = CommandException.class)
+    public void limitCaller() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("world ? time set ?")
+            public void test(@MaxLength(2) String sender, String name, int newTime) {
+                fail("Shouldn't be called");
+            }
+        });
+        commandManager.execute("hello", "world testing time set 55");
+    }
+
     @Test()
     public void limitCustom() throws CommandException {
         final AtomicInteger call = new AtomicInteger();
@@ -333,5 +345,23 @@ public class TestCommand {
         } catch (CommandException e) {
             // All ok
         }
+    }
+
+    @Test
+    public void differentCaller() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("hello")
+            public void call(String caller) {
+
+            }
+
+            @Command("hello")
+            public void call(Integer caller) {
+
+            }
+        });
+        commandManager.execute("hey", "hello");
+        commandManager.execute(5, "hello");
     }
 }

@@ -16,6 +16,8 @@
 
 package uk.co.thinkofdeath.command;
 
+import uk.co.thinkofdeath.command.types.ArgumentValidator;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,12 +42,14 @@ class CommandNode {
     }
 
     static class CommandMethod {
-        Method method;
-        CommandHandler owner;
+        final Method method;
+        final CommandHandler owner;
+        final ArgumentValidator[] argumentValidators;
 
-        CommandMethod(Method method, CommandHandler owner) {
+        CommandMethod(Method method, CommandHandler owner, ArgumentValidator[] argumentValidators) {
             this.method = method;
             this.owner = owner;
+            this.argumentValidators = argumentValidators;
         }
     }
 }

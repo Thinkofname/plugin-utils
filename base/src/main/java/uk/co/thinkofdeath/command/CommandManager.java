@@ -167,7 +167,11 @@ public class CommandManager {
                 throw new CommandRegisterException("Duplicate command");
             }
 
-            currentNode.methods.put(methodArgs[0], new CommandNode.CommandMethod(method, commandHandler));
+            ArgumentValidator[] argumentValidators = processCommandAnnotations(methodArgs[0],
+                    methodArgAnnotations[0]);
+
+            currentNode.methods.put(methodArgs[0],
+                    new CommandNode.CommandMethod(method, commandHandler, argumentValidators));
         }
     }
 
@@ -255,9 +259,19 @@ public class CommandManager {
                     continue;
                 }
                 // Check the caller
+                callCheck:
                 for (CommandNode.CommandMethod method : currentNode.methods.values()) {
                     Class<?> type = method.method.getParameterTypes()[0];
                     if (type.isAssignableFrom(caller.getClass())) {
+
+                        for (ArgumentValidator t : method.argumentValidators) {
+                            String error = t.validate(caller);
+                            if (error != null) {
+                                lastError = error;
+                                continue callCheck;
+                            }
+                        }
+
                         try {
                             method.method.invoke(method.owner, arguments.toArray(new Object[arguments.size()]));
                         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -267,9 +281,9 @@ public class CommandManager {
                     } else {
                         // Incorrect caller
                         lastError = "You cannot call this command";
-                        continue main;
                     }
                 }
+                continue;
             }
             String arg = args[offset];
             String argLower = arg.toLowerCase(); // For checking sub commands
@@ -321,8 +335,10 @@ public class CommandManager {
      * Defines a parser for the type class. The parser will be called
      * when the class is encountered as a parameter to a method.
      *
-     * @param clazz The class to match this parser to
-     * @param parser The parser to use for this type
+     * @param clazz
+     *         The class to match this parser to
+     * @param parser
+     *         The parser to use for this type
      */
     public <T> void addParser(Class<T> clazz, ArgumentParser<T> parser) {
         parsers.put(clazz, parser);
