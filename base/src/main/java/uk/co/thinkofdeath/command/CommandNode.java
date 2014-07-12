@@ -25,8 +25,7 @@ class CommandNode {
     final HashMap<String, CommandNode> subCommands = new HashMap<>();
     final ArrayList<ArgumentNode> arguments = new ArrayList<>();
 
-    Method method;
-    CommandHandler owner;
+    final HashMap<Class<?>, CommandMethod> methods = new HashMap<>();
 
     CommandNode() {
     }
@@ -36,8 +35,17 @@ class CommandNode {
         return "CommandNode{" +
                 "subCommands=" + subCommands +
                 ", arguments=" + arguments +
-                ", method=" + method +
-                ", owner=" + owner +
+                ", methods=" + methods +
                 '}';
+    }
+
+    static class CommandMethod {
+        Method method;
+        CommandHandler owner;
+
+        CommandMethod(Method method, CommandHandler owner) {
+            this.method = method;
+            this.owner = owner;
+        }
     }
 }

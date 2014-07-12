@@ -113,7 +113,7 @@ public class CommandManager {
                 // No way to actually check if the argument is a caller
                 // just that it exists since anything could technically
                 // be caller
-                throw new RuntimeException("You must have a 'caller' argument");
+                throw new CommandRegisterException("You must have a 'caller' argument");
             }
 
             String[] args = command.value().split("\\s");
@@ -128,10 +128,13 @@ public class CommandManager {
             CommandNode currentNode = rootNode;
             for (String arg : args) {
                 if (arg.equals("?")) { // Dynamic argument
+                    if (argIndex >= methodArgs.length) {
+                        throw new CommandRegisterException("Incorrect number of method parameters");
+                    }
                     Class<?> argType = methodArgs[argIndex];
                     ArgumentParser parser = parsers.get(argType);
                     if (parser == null) {
-                        throw new RuntimeException("No parser for " + argType.getSimpleName());
+                        throw new CommandRegisterException("No parser for " + argType.getSimpleName());
                     }
                     // Obtain the annotations with argument validators and create
                     // instances of them using the annotation as the arguments
@@ -153,18 +156,18 @@ public class CommandManager {
                 }
             }
 
-            // If we followed the route and got to a node with a method already then
-            // another command has the same signature
-            if (currentNode.method != null) {
-                throw new RuntimeException("Duplicate command");
-            }
             // Either we have left over '?' or not enough
             if (argIndex != methodArgs.length) {
-                throw new RuntimeException("Incorrect number of method parameters");
+                throw new CommandRegisterException("Incorrect number of method parameters");
             }
 
-            currentNode.method = method;
-            currentNode.owner = commandHandler;
+            // If we followed the route and got to a node with a method already then
+            // another command has the same signature
+            if (currentNode.methods.containsKey(methodArgs[0])) {
+                throw new CommandRegisterException("Duplicate command");
+            }
+
+            currentNode.methods.put(methodArgs[0], new CommandNode.CommandMethod(method, commandHandler));
         }
     }
 
@@ -236,6 +239,7 @@ public class CommandManager {
         toTry.add(new CommandState(rootNode, baseArgs, 0));
         // Try every possible route until we match a command or
         // run out of options
+        main:
         while (!toTry.isEmpty()) {
             CommandState state = toTry.pop();
             CommandNode currentNode = state.node;
@@ -243,7 +247,7 @@ public class CommandManager {
             int offset = state.offset;
             // We have enough arguments try executing the command
             if (offset == args.length) {
-                if (currentNode.method == null) {
+                if (currentNode.methods.size() == 0) {
                     // No command here
                     if (lastError == null) {
                         lastError = "Unknown command";
@@ -251,18 +255,20 @@ public class CommandManager {
                     continue;
                 }
                 // Check the caller
-                Class<?> type = currentNode.method.getParameterTypes()[0];
-                if (type.isAssignableFrom(caller.getClass())) {
-                    try {
-                        currentNode.method.invoke(currentNode.owner, arguments.toArray(new Object[arguments.size()]));
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
+                for (CommandNode.CommandMethod method : currentNode.methods.values()) {
+                    Class<?> type = method.method.getParameterTypes()[0];
+                    if (type.isAssignableFrom(caller.getClass())) {
+                        try {
+                            method.method.invoke(method.owner, arguments.toArray(new Object[arguments.size()]));
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return;
+                    } else {
+                        // Incorrect caller
+                        lastError = "You cannot call this command";
+                        continue main;
                     }
-                    return;
-                } else {
-                    // Incorrect caller
-                    lastError = "You cannot call this command";
-                    continue;
                 }
             }
             String arg = args[offset];
