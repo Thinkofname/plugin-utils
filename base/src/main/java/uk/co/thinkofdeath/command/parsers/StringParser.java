@@ -16,9 +16,20 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Accepts everything
+ */
 public class StringParser implements ArgumentParser<String> {
     @Override
     public String parse(String argument) throws ParserException {
         return argument;
+    }
+
+    @Override
+    public Set<String> complete(String argument) {
+        return new HashSet<>();
     }
 }

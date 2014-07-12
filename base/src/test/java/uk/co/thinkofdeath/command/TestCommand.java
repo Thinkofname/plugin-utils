@@ -2,6 +2,7 @@ package uk.co.thinkofdeath.command;
 
 import org.junit.Test;
 import uk.co.thinkofdeath.command.parsers.ArgumentParser;
+import uk.co.thinkofdeath.command.parsers.EnumParser;
 import uk.co.thinkofdeath.command.parsers.ParserException;
 import uk.co.thinkofdeath.command.types.ArgumentValidator;
 import uk.co.thinkofdeath.command.types.MaxLength;
@@ -11,6 +12,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
@@ -270,9 +273,9 @@ public class TestCommand {
     @Test
     public void customParser() throws CommandException {
         CommandManager commandManager = new CommandManager();
-        commandManager.addParser(int[].class, new ArgumentParser() {
+        commandManager.addParser(int[].class, new ArgumentParser<int[]>() {
             @Override
-            public Object parse(String argument) throws ParserException {
+            public int[] parse(String argument) throws ParserException {
                 String[] args = argument.split("\\s*,\\s*");
                 int[] out = new int[args.length];
                 for (int i = 0; i < args.length; i++) {
@@ -284,6 +287,11 @@ public class TestCommand {
                 }
                 return out;
             }
+
+            @Override
+            public Set<int[]> complete(String argument) {
+                return new HashSet<>();
+            }
         });
         commandManager.register(new CommandHandler() {
             @Command("numbers ?")
@@ -293,5 +301,37 @@ public class TestCommand {
             }
         });
         commandManager.execute("tester", "numbers `1, 2, 3, 4, 10`");
+    }
+
+    static enum TestEnum {
+        HELLO,
+        TESTING,
+        CAKE,
+        ABC
+    }
+
+    @Test
+    public void enumParser() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.addParser(TestEnum.class, new EnumParser<>(TestEnum.class));
+        commandManager.register(new CommandHandler() {
+            private int count = 0;
+
+            @Command("test ?")
+            public void enumTest(String sender, TestEnum testEnum) {
+                assertEquals(TestEnum.values()[count++], testEnum);
+            }
+        });
+
+        commandManager.execute("test", "test hello");
+        commandManager.execute("test", "test TESTING");
+        commandManager.execute("test", "test cAkE");
+        commandManager.execute("test", "test aBc");
+        try {
+            commandManager.execute("test", "test world");
+            fail();
+        } catch (CommandException e) {
+            // All ok
+        }
     }
 }

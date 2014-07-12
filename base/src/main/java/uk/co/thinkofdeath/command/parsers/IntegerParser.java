@@ -16,6 +16,12 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Allows for any valid integer
+ */
 public class IntegerParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(String argument) throws ParserException {
@@ -24,5 +30,10 @@ public class IntegerParser implements ArgumentParser<Integer> {
         } catch (NumberFormatException e) {
             throw new ParserException("'" + argument + "' is not an integer");
         }
+    }
+
+    @Override
+    public Set<Integer> complete(String argument) {
+        return new HashSet<>();
     }
 }

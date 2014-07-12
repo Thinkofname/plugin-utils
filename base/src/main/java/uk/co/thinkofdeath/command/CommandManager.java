@@ -325,7 +325,7 @@ public class CommandManager {
      * @param clazz The class to match this parser to
      * @param parser The parser to use for this type
      */
-    public void addParser(Class<?> clazz, ArgumentParser parser) {
+    public <T> void addParser(Class<T> clazz, ArgumentParser<T> parser) {
         parsers.put(clazz, parser);
     }
 

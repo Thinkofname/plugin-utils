@@ -16,6 +16,8 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
+import java.util.Set;
+
 /**
  * An argument parser takes a argument passed into a
  * command returns object/type is represents. If the
@@ -38,4 +40,14 @@ public interface ArgumentParser<T> {
      *         parse the argument
      */
     T parse(String argument) throws ParserException;
+
+    /**
+     * Returns a set containing the possible completions
+     * to the passed argument
+     *
+     * @param argument
+     *         The partial argument
+     * @return The set of possible completions
+     */
+    Set<T> complete(String argument);
 }
