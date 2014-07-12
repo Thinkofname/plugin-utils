@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
 public @interface Command {
     /**
      * The syntax of the command required
+     *
      * @return The command syntax
      * @see uk.co.thinkofdeath.command.CommandManager#register(CommandHandler)
      */

@@ -30,9 +30,11 @@ public interface ArgumentParser {
      * Attempts to convert the argument into the type
      * handled by this parser
      *
-     * @param argument The argument to parse
+     * @param argument
+     *         The argument to parse
      * @return The result of parsing
-     * @throws ParserException If the parser is unable to
+     * @throws ParserException
+     *         If the parser is unable to
      *         parse the argument
      */
     Object parse(String argument) throws ParserException;

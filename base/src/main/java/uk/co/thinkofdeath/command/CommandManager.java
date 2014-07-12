@@ -49,8 +49,8 @@ public class CommandManager {
      * Creates a CommandManager initialised with parsers
      * for basic types:
      * <ul>
-     *   <li>String</li>
-     *   <li>int</li>
+     * <li>String</li>
+     * <li>int</li>
      * </ul>
      */
     public CommandManager() {
@@ -64,16 +64,16 @@ public class CommandManager {
      * annotated with a {@link uk.co.thinkofdeath.command.Command}
      * annotation.
      *
-     * <p/>
+     * <p>
      *
      * The value contained in the {@link uk.co.thinkofdeath.command.Command}
      * is used to find the placement of each argument in
      * the command as sub-commands are supported. The
      * format of the command value should be as follows
      *
-     * <p/>
-     *     <code>command sub ? anothersub ?</code>
-     * <p/>
+     * <pre>
+     * command sub ? anothersub ?
+     * </pre>
      *
      * where `?` is the location of the parameter the
      * user can enter. The type of the parameters will be
@@ -81,20 +81,21 @@ public class CommandManager {
      * annotation is attached to excluding the first argument.
      * Only types with registered parsers may be used.
      *
-     * <p/>
+     * <p>
      *
      * The first argument of the method will be the caller
      * and the command will only be passed to the method
      * if the caller is assignable to it.
      *
-     * <p/>
+     * <p>
      *
      * Additional annotations may be added to the parameters
      * to impose limits on them. The annotation must have
      * a type handler annotation on them for the executor
      * use them. For example {@link uk.co.thinkofdeath.command.types.MaxLength}
      *
-     * @param commandHandler The command handler to be added
+     * @param commandHandler
+     *         The command handler to be added
      */
     public void register(CommandHandler commandHandler) {
         // We search through declared methods so that private
@@ -197,10 +198,14 @@ public class CommandManager {
      * with the passed arguments (if any). This is a helper for APIs
      * that provide arguments as an array instead of the full string
      *
-     * @param caller The caller to call as
-     * @param name The name of the command
-     * @param args The arguments of the command (if any)
-     * @throws CommandException Thrown if the command failed to execute
+     * @param caller
+     *         The caller to call as
+     * @param name
+     *         The name of the command
+     * @param args
+     *         The arguments of the command (if any)
+     * @throws CommandException
+     *         Thrown if the command failed to execute
      */
     public void execute(Object caller, String name, String... args) throws CommandException {
         execute(caller, join(name, args));
@@ -211,9 +216,12 @@ public class CommandManager {
      * will be split by spaces unless the argument is wrapped
      * in '`' quotes
      *
-     * @param caller The caller to call as
-     * @param command The command
-     * @throws CommandException Thrown if the command failed to execute
+     * @param caller
+     *         The caller to call as
+     * @param command
+     *         The command
+     * @throws CommandException
+     *         Thrown if the command failed to execute
      */
     public void execute(Object caller, String command) throws CommandException {
         // lastError encountered whilst executing. Wi
