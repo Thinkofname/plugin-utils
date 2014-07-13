@@ -203,4 +203,18 @@ public class TestCommand {
         commandManager.execute("hey", "hello");
         commandManager.execute(5, "hello");
     }
+
+    @Test
+    public void explicitPosition() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?2 ?3 ?1")
+            public void test(String caller, String a, String b, String c) {
+                assertEquals("a", b);
+                assertEquals("b", c);
+                assertEquals("c", a);
+            }
+        });
+        commandManager.execute("tester", "test a b c");
+    }
 }

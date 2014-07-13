@@ -45,11 +45,13 @@ class CommandNode {
         final Method method;
         final CommandHandler owner;
         final ArgumentValidator[] argumentValidators;
+        final int[] argumentPositions;
 
-        CommandMethod(Method method, CommandHandler owner, ArgumentValidator[] argumentValidators) {
+        CommandMethod(Method method, CommandHandler owner, ArgumentValidator[] argumentValidators, int[] argumentPositions) {
             this.method = method;
             this.owner = owner;
             this.argumentValidators = argumentValidators;
+            this.argumentPositions = argumentPositions;
         }
     }
 }

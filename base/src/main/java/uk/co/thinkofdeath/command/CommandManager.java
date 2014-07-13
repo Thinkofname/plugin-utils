@@ -80,6 +80,16 @@ public class CommandManager {
      *
      * <p>
      *
+     * After `?` a number can follow to control which parameter
+     * of the method this argument will be passed to. E.g. `?2`
+     * will cause that argument to be assigned to the second
+     * parameter (third including caller) of method. It is
+     * recommended that if this is used for one argument
+     * then the rest should also be explicitly defined as
+     * well to ensure consistent results.
+     *
+     * <p>
+     *
      * The first argument of the method will be the caller
      * and the command will only be passed to the method
      * if the caller is assignable to it.
@@ -117,6 +127,7 @@ public class CommandManager {
             Class<?>[] methodArgs = method.getParameterTypes();
             Annotation[][] methodArgAnnotations = method.getParameterAnnotations();
             int argIndex = 1; // Skip the 'caller' argument
+            int[] argumentPositions = new int[methodArgs.length];
 
             // This starts at the at the root node and
             // searches/creates branches until it reaches
@@ -124,23 +135,34 @@ public class CommandManager {
             // called later
             CommandNode currentNode = rootNode;
             for (String arg : args) {
-                if (arg.equals("?")) { // Dynamic argument
+                if (arg.startsWith("?")) { // Dynamic argument
+                    int index;
+                    if (arg.equals("?")) {
+                        index = argIndex;
+                    } else {
+                        index = Integer.parseInt(arg.substring(1));
+                        if (index >= methodArgs.length && index < 1) {
+                            throw new CommandRegisterException("Invalid explicit argument position");
+                        }
+                    }
                     if (argIndex >= methodArgs.length) {
                         throw new CommandRegisterException("Incorrect number of method parameters");
                     }
-                    Class<?> argType = methodArgs[argIndex];
+                    Class<?> argType = methodArgs[index];
                     ArgumentParser parser = parsers.get(argType);
                     if (parser == null) {
                         throw new CommandRegisterException("No parser for " + argType.getSimpleName());
                     }
                     // Obtain the annotations with argument validators and create
                     // instances of them using the annotation as the arguments
-                    Annotation[] annotations = methodArgAnnotations[argIndex];
+                    Annotation[] annotations = methodArgAnnotations[index];
                     ArgumentValidator[] argCheckers = processCommandAnnotations(argType, annotations);
                     ArgumentNode argumentNode = new ArgumentNode(parser, argCheckers);
                     currentNode.arguments.add(argumentNode);
                     // Branch into the node
                     currentNode = argumentNode.node;
+                    // Save the location of the argument
+                    argumentPositions[argIndex] = index;
                     argIndex++;
                 } else { // Constant
                     arg = arg.toLowerCase(); // We don't care about case for sub commands
@@ -168,7 +190,11 @@ public class CommandManager {
                     methodArgAnnotations[0]);
 
             currentNode.methods.put(methodArgs[0],
-                    new CommandNode.CommandMethod(method, commandHandler, argumentValidators));
+                    new CommandNode.CommandMethod(
+                            method,
+                            commandHandler,
+                            argumentValidators,
+                            argumentPositions));
         }
     }
 
@@ -269,8 +295,13 @@ public class CommandManager {
                             }
                         }
 
+                        Object[] processedArguments = new Object[arguments.size()];
+                        for (int i = 0; i < processedArguments.length; i++) {
+                            processedArguments[method.argumentPositions[i]] = arguments.get(i);
+                        }
+
                         try {
-                            method.method.invoke(method.owner, arguments.toArray(new Object[arguments.size()]));
+                            method.method.invoke(method.owner, processedArguments);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             throw new RuntimeException(e);
                         }
