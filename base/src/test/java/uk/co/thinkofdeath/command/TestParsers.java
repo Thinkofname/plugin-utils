@@ -128,11 +128,11 @@ public class TestParsers {
                 fail();
             }
         });
-        assertEquals(Arrays.asList("HELLO"), commandManager.complete("test hel"));
-        assertEquals(new ArrayList<String>(), commandManager.complete("test wor"));
-        assertEquals(Arrays.asList("CAKE", "COLD"), commandManager.complete("test c"));
-        assertEquals(Arrays.asList("TESTING"), commandManager.complete("test test"));
-        assertEquals(Arrays.asList("ABC", "abcd"), commandManager.complete("test ab"));
+        Util.same(Arrays.asList("HELLO"), commandManager.complete("test hel"));
+        Util.same(new ArrayList<String>(), commandManager.complete("test wor"));
+        Util.same(Arrays.asList("CAKE", "COLD"), commandManager.complete("test c"));
+        Util.same(Arrays.asList("TESTING"), commandManager.complete("test test"));
+        Util.same(Arrays.asList("ABC", "abcd"), commandManager.complete("test ab"));
     }
 
     @Test
