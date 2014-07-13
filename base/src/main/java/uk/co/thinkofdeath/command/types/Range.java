@@ -34,7 +34,7 @@ class RangeHandler implements ArgumentValidator<Integer> {
         if (argument < min) {
             return String.format("'%d' must be greater or equal to '%d'", argument, min);
         }
-        if (argument < max) {
+        if (argument > max) {
             return String.format("'%d' must be lesser or equal to '%d'", argument, max);
         }
         return null;
