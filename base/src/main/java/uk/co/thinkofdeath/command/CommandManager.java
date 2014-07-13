@@ -262,7 +262,7 @@ public class CommandManager {
                     if (type.isAssignableFrom(caller.getClass())) {
 
                         for (ArgumentValidator t : method.argumentValidators) {
-                            String error = t.validate(caller);
+                            String error = t.validate(null, caller);
                             if (error != null) {
                                 lastError = error;
                                 continue callCheck;
@@ -298,7 +298,7 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
-                    String error = type.validate(out);
+                    String error = type.validate(arg, out);
                     if (error != null) {
                         lastError = error;
                         continue argTypes;
@@ -366,7 +366,7 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
-                    String error = type.validate(out);
+                    String error = type.validate(arg, out);
                     if (error != null) {
                         continue argTypes;
                     }

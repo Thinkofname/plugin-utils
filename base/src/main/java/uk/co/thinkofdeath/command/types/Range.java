@@ -11,6 +11,9 @@ import java.lang.annotation.Target;
 )
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ * Requires the integer to be between min and max
+ */
 public @interface Range {
     int min() default Integer.MIN_VALUE;
     int max() default Integer.MAX_VALUE;
@@ -27,7 +30,7 @@ class RangeHandler implements ArgumentValidator<Integer> {
     }
 
     @Override
-    public String validate(Integer argument) {
+    public String validate(String argStr, Integer argument) {
         if (argument < min) {
             return String.format("'%d' must be greater or equal to '%d'", argument, min);
         }

@@ -32,11 +32,13 @@ public interface ArgumentValidator<T> {
      * Checks if the argument matches the specification declared
      * in the matching annotation.
      *
+     * @param argString The string that the parser used to
+     *                  obtain this argument. May be null
      * @param argument
      *         The argument to be validated, should
      *         be of the type declared in the type handler
      * @return null if it validates fine otherwise the
      * error to be displayed
      */
-    String validate(T argument);
+    String validate(String argString, T argument);
 }

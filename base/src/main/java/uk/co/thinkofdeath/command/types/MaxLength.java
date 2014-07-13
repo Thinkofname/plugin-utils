@@ -27,6 +27,10 @@ import java.lang.annotation.Target;
 )
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
+/**
+ * Requires the passed string to have a length less than
+ * or equal to the value
+ */
 public @interface MaxLength {
     int value();
 }
@@ -40,7 +44,7 @@ class MaxLengthHandler implements ArgumentValidator<String> {
     }
 
     @Override
-    public String validate(String argument) {
+    public String validate(String argStr, String argument) {
         if (argument.length() > max) {
             return String.format("Argument '" + argument + "' is longer than " + max);
         }
