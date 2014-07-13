@@ -4,15 +4,14 @@ import java.util.List;
 
 public class Util {
 
-    public static <T> boolean same(List<T> a, List<T> b) {
+    public static <T> void same(List<T> a, List<T> b) {
         if (a.size() != b.size()) {
-            return false;
+            throw new AssertionError("a != b");
         }
         for (T el : a) {
             if (!b.contains(el)) {
-                return false;
+                throw new AssertionError("Couldn't find " + el);
             }
         }
-        return true;
     }
 }
