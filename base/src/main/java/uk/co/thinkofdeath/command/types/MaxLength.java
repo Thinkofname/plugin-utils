@@ -33,7 +33,7 @@ public @interface MaxLength {
 
 class MaxLengthHandler implements ArgumentValidator<String> {
 
-    private int max;
+    private final int max;
 
     MaxLengthHandler(MaxLength maxLength) {
         max = maxLength.value();

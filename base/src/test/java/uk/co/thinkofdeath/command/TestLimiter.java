@@ -3,6 +3,7 @@ package uk.co.thinkofdeath.command;
 import org.junit.Test;
 import uk.co.thinkofdeath.command.types.ArgumentValidator;
 import uk.co.thinkofdeath.command.types.MaxLength;
+import uk.co.thinkofdeath.command.types.Range;
 import uk.co.thinkofdeath.command.types.TypeHandler;
 
 import java.lang.annotation.ElementType;
@@ -17,7 +18,7 @@ import static org.junit.Assert.fail;
 @SuppressWarnings("unused")
 public class TestLimiter {
     @Test(expected = CommandException.class)
-    public void limit() throws CommandException {
+    public void limitMaxLength() throws CommandException {
         CommandManager commandManager = new CommandManager();
         commandManager.register(new CommandHandler() {
             @Command("world ? time set ?")
@@ -26,6 +27,30 @@ public class TestLimiter {
             }
         });
         commandManager.execute("hello", "world testing time set 55");
+    }
+
+    public void limitRange() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            int call = 0;
+            @Command("do ?")
+            public void test(String sender, @Range(min = 0, max = 10) int val) {
+                assertEquals(0, call++);
+            }
+
+            @Command("do ?")
+            public void test2(String sender, @Range(min = 11, max = 20) int val) {
+                assertEquals(1, call++);
+            }
+
+            @Command("do ?")
+            public void test3(String sender, @Range(min = 21, max = 30) int val) {
+                assertEquals(2, call++);
+            }
+        });
+        commandManager.execute("hello", "do 4");
+        commandManager.execute("hello", "do 18");
+        commandManager.execute("hello", "do 25");
     }
 
     @Test(expected = CommandException.class)
