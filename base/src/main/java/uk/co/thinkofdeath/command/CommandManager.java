@@ -384,10 +384,31 @@ public class CommandManager {
         throw new CommandException(localeHandler.getError(lastError));
     }
 
+
+    /**
+     * Provides a list of possible completions for the
+     * command. Follows the same rules a {@link #execute(Object, String)}
+     * This is a helper for APIs that provide arguments
+     * as an array instead of the full string
+     *
+     * @param name
+     *         The name of the command
+     * @param args
+     *         The arguments of the command (if any)
+     * @return A list of possible completions
+     */
     public List<String> complete(String name, String... args) {
         return complete(join(name, args));
     }
 
+    /**
+     * Provides a list of possible completions for the
+     * command. Follows the same rules a {@link #execute(Object, String)}
+     *
+     * @param command
+     *         The command to complete
+     * @return A list of possible completions
+     */
     public List<String> complete(String command) {
         Set<String> completions = new HashSet<>();
         String[] args = split(command);
