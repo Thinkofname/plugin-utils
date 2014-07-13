@@ -33,7 +33,7 @@ public class IntegerParser implements ArgumentParser<Integer> {
     }
 
     @Override
-    public Set<Integer> complete(String argument) {
+    public Set<String> complete(String argument) {
         return new HashSet<>();
     }
 }

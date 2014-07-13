@@ -5,6 +5,8 @@ import uk.co.thinkofdeath.command.parsers.ArgumentParser;
 import uk.co.thinkofdeath.command.parsers.EnumParser;
 import uk.co.thinkofdeath.command.parsers.ParserException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -80,6 +82,7 @@ public class TestParsers {
         HELLO,
         TESTING,
         CAKE,
+        COLD,
         ABC
     }
 
@@ -99,6 +102,7 @@ public class TestParsers {
         commandManager.execute("test", "test hello");
         commandManager.execute("test", "test TESTING");
         commandManager.execute("test", "test cAkE");
+        commandManager.execute("test", "test cold");
         commandManager.execute("test", "test aBc");
         try {
             commandManager.execute("test", "test world");
@@ -106,6 +110,29 @@ public class TestParsers {
         } catch (CommandException e) {
             // All ok
         }
+    }
+
+    @Test
+    public void enumParserComplete() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.addParser(TestEnum.class, new EnumParser<>(TestEnum.class));
+        commandManager.register(new CommandHandler() {
+
+            @Command("test ?")
+            public void enumTest(String sender, TestEnum testEnum) {
+                fail();
+            }
+
+            @Command("test abcd")
+            public void test(String sender) {
+                fail();
+            }
+        });
+        assertEquals(Arrays.asList("HELLO"), commandManager.complete("test hel"));
+        assertEquals(new ArrayList<String>(), commandManager.complete("test wor"));
+        assertEquals(Arrays.asList("CAKE", "COLD"), commandManager.complete("test c"));
+        assertEquals(Arrays.asList("TESTING"), commandManager.complete("test test"));
+        assertEquals(Arrays.asList("ABC", "abcd"), commandManager.complete("test ab"));
     }
 
     @Test
@@ -127,7 +154,7 @@ public class TestParsers {
             }
 
             @Override
-            public Set<int[]> complete(String argument) {
+            public Set<String> complete(String argument) {
                 return new HashSet<>();
             }
         });

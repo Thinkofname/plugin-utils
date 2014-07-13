@@ -27,10 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -231,7 +228,7 @@ public class CommandManager {
      *         Thrown if the command failed to execute
      */
     public void execute(Object caller, String command) throws CommandException {
-        // lastError encountered whilst executing. Wi
+        // lastError encountered whilst executing.
         String lastError = null;
         String[] args = split(command);
         // Stores the states we can return to if the current route fails
@@ -328,7 +325,61 @@ public class CommandManager {
     }
 
     public List<String> complete(String command) {
-        return new ArrayList<>();
+        Set<String> completions = new HashSet<>();
+        String[] args = split(command);
+        // Stores the states we can return to if the current route fails
+        Stack<CommandState> toTry = new Stack<>();
+        toTry.add(new CommandState(rootNode, null, 0));
+        // Try every possible route until we match a command or
+        // run out of options
+        main:
+        while (!toTry.isEmpty()) {
+            CommandState state = toTry.pop();
+            CommandNode currentNode = state.node;
+            int offset = state.offset;
+
+            String arg = args[offset];
+            String argLower = arg.toLowerCase(); // For checking sub commands
+            // We have enough arguments try completing the command
+            if (offset == args.length - 1) {
+                for (String sub : currentNode.subCommands.keySet()) {
+                    if (sub.startsWith(argLower)) {
+                        completions.add(sub);
+                    }
+                }
+
+                for (ArgumentNode argumentNode : currentNode.arguments) {
+                    completions.addAll(argumentNode.parser.complete(arg));
+                }
+                continue;
+            }
+            // Try matching against all the argument types
+            argTypes:
+            for (ArgumentNode argumentNode : currentNode.arguments) {
+                Object out;
+                try {
+                    out = argumentNode.parser.parse(arg);
+                } catch (ParserException e) {
+                    continue;
+                }
+                if (out == null) {
+                    continue;
+                }
+                for (ArgumentValidator type : argumentNode.type) {
+                    String error = type.validate(out);
+                    if (error != null) {
+                        continue argTypes;
+                    }
+                }
+                toTry.add(new CommandState(argumentNode.node, null, offset + 1));
+            }
+            // Check sub-commands
+            if (currentNode.subCommands.containsKey(argLower)) {
+                CommandNode newNode = currentNode.subCommands.get(argLower);
+                toTry.add(new CommandState(newNode, null, offset + 1));
+            }
+        }
+        return new ArrayList<>(completions);
     }
 
     /**

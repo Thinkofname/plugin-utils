@@ -34,12 +34,12 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
     }
 
     @Override
-    public Set<T> complete(String argument) {
+    public Set<String> complete(String argument) {
         argument = argument.toUpperCase();
-        HashSet<T> ret = new HashSet<>();
+        HashSet<String> ret = new HashSet<>();
         for (T v : e.getEnumConstants()) {
             if (v.name().toUpperCase().startsWith(argument)) {
-                ret.add(v);
+                ret.add(v.name());
             }
         }
         return ret;

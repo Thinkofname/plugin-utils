@@ -49,5 +49,5 @@ public interface ArgumentParser<T> {
      *         The partial argument
      * @return The set of possible completions
      */
-    Set<T> complete(String argument);
+    Set<String> complete(String argument);
 }
