@@ -291,7 +291,6 @@ public class CommandManager {
         toTry.add(new CommandState(rootNode, baseArgs, 0));
         // Try every possible route until we match a command or
         // run out of options
-        main:
         while (!toTry.isEmpty()) {
             CommandState state = toTry.pop();
             CommandNode currentNode = state.node;
@@ -313,6 +312,7 @@ public class CommandManager {
                     if (type.isAssignableFrom(caller.getClass())) {
 
                         for (ArgumentValidator t : method.argumentValidators) {
+                            @SuppressWarnings("unchecked")
                             CommandError error = t.validate(null, caller);
                             if (error != null) {
                                 if (lastError == null || lastError.getPriority() < error.getPriority()) {
@@ -360,6 +360,7 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
+                    @SuppressWarnings("unchecked")
                     CommandError error = type.validate(arg, out);
                     if (error != null) {
                         if (lastError == null || lastError.getPriority() < error.getPriority()) {
@@ -368,6 +369,7 @@ public class CommandManager {
                         continue argTypes;
                     }
                 }
+                @SuppressWarnings("unchecked")
                 ArrayList<Object> newArgs = (ArrayList<Object>) arguments.clone();
                 newArgs.add(out);
                 toTry.add(new CommandState(argumentNode.node, newArgs, offset + 1));
@@ -417,7 +419,6 @@ public class CommandManager {
         toTry.add(new CommandState(rootNode, null, 0));
         // Try every possible route until we match a command or
         // run out of options
-        main:
         while (!toTry.isEmpty()) {
             CommandState state = toTry.pop();
             CommandNode currentNode = state.node;
@@ -451,6 +452,7 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
+                    @SuppressWarnings("unchecked")
                     CommandError error = type.validate(arg, out);
                     if (error != null) {
                         continue argTypes;
