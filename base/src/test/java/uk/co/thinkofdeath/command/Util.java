@@ -8,7 +8,7 @@ public class Util {
         if (a.size() != b.size()) {
             return false;
         }
-        for (Object el : a) {
+        for (T el : a) {
             if (!b.contains(el)) {
                 return false;
             }
