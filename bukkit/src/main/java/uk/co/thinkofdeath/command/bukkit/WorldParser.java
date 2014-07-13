@@ -2,6 +2,7 @@ package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
+import uk.co.thinkofdeath.command.CommandError;
 import uk.co.thinkofdeath.command.parsers.ArgumentParser;
 import uk.co.thinkofdeath.command.parsers.ParserException;
 
@@ -22,7 +23,7 @@ public class WorldParser implements ArgumentParser<World> {
     public World parse(String argument) throws ParserException {
         World world = plugin.getServer().getWorld(argument);
         if (world == null) {
-            throw new ParserException("No such world '" + argument + "'");
+            throw new ParserException(new CommandError(2, "bukkit.no-world", argument));
         }
         return world;
     }

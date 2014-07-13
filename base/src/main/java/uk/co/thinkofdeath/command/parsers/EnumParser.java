@@ -1,5 +1,7 @@
 package uk.co.thinkofdeath.command.parsers;
 
+import uk.co.thinkofdeath.command.CommandError;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +32,7 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
                 return v;
             }
         }
-        throw new ParserException("Unknown value '" + argument + "'");
+        throw new ParserException(new CommandError(2, "parser.enum.invalid", argument));
     }
 
     @Override

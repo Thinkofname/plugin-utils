@@ -16,6 +16,8 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
+import uk.co.thinkofdeath.command.CommandError;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +30,7 @@ public class IntegerParser implements ArgumentParser<Integer> {
         try {
             return Integer.valueOf(argument);
         } catch (NumberFormatException e) {
-            throw new ParserException("'" + argument + "' is not an integer");
+            throw new ParserException(new CommandError(2, "parser.integer.invalid", argument));
         }
     }
 

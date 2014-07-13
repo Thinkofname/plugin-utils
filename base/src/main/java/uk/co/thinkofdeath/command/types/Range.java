@@ -1,5 +1,7 @@
 package uk.co.thinkofdeath.command.types;
 
+import uk.co.thinkofdeath.command.CommandError;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -30,12 +32,12 @@ class RangeHandler implements ArgumentValidator<Integer> {
     }
 
     @Override
-    public String validate(String argStr, Integer argument) {
+    public CommandError validate(String argStr, Integer argument) {
         if (argument < min) {
-            return String.format("'%d' must be greater or equal to '%d'", argument, min);
+            return new CommandError(3, "validator.range.min", argument, min);
         }
         if (argument > max) {
-            return String.format("'%d' must be lesser or equal to '%d'", argument, max);
+            return new CommandError(3, "validator.range.max'", argument, max);
         }
         return null;
     }

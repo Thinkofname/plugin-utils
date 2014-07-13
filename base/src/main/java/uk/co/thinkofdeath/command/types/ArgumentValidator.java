@@ -16,6 +16,8 @@
 
 package uk.co.thinkofdeath.command.types;
 
+import uk.co.thinkofdeath.command.CommandError;
+
 /**
  * An argument validator is used to apply limits to
  * specific argument of a command. This must be used
@@ -40,5 +42,5 @@ public interface ArgumentValidator<T> {
      * @return null if it validates fine otherwise the
      * error to be displayed
      */
-    String validate(String argString, T argument);
+    CommandError validate(String argString, T argument);
 }

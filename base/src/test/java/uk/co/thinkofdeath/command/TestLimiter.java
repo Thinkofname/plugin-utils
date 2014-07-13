@@ -106,9 +106,9 @@ public class TestLimiter {
             }
 
             @Override
-            public String validate(String argString, String argument) {
+            public CommandError validate(String argString, String argument) {
                 if (argument.toLowerCase().contains("k")) {
-                    return "No K's allowed";
+                    return new CommandError(3, "No K's allowed");
                 }
                 return null;
             }

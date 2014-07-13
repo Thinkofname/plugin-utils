@@ -1,6 +1,7 @@
 package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.entity.Player;
+import uk.co.thinkofdeath.command.CommandError;
 import uk.co.thinkofdeath.command.types.ArgumentValidator;
 import uk.co.thinkofdeath.command.types.TypeHandler;
 
@@ -29,11 +30,11 @@ class StrictHandler implements ArgumentValidator<Player> {
     }
 
     @Override
-    public String validate(String argStr, Player argument) {
+    public CommandError validate(String argStr, Player argument) {
         if (argStr == null) return null;
         if (argument.getName().equalsIgnoreCase(argStr)) {
             return null;
         }
-        return "Could not find player ;" + argStr + "'";
+        return new CommandError(3, "bukkit.no-player", argStr);
     }
 }

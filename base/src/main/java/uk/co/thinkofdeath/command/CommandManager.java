@@ -38,9 +38,10 @@ import java.util.regex.Pattern;
  */
 public class CommandManager {
 
-    private CommandNode rootNode = new CommandNode();
-    private HashMap<Class<?>, ArgumentParser> parsers = new HashMap<>();
-    private Pattern splitter = Pattern.compile("(?:`(.*?)`)|(?:(.*?)(\\s|$))");
+    private final CommandLocaleHandler localeHandler;
+    private final CommandNode rootNode = new CommandNode();
+    private final HashMap<Class<?>, ArgumentParser> parsers = new HashMap<>();
+    private final Pattern splitter = Pattern.compile("(?:`(.*?)`)|(?:(.*?)(\\s|$))");
 
     /**
      * Creates a CommandManager initialised with parsers
@@ -51,6 +52,30 @@ public class CommandManager {
      * </ul>
      */
     public CommandManager() {
+        this(new DefaultLocaleHandler());
+    }
+
+    /**
+     * Creates a CommandManager initialised with parsers
+     * for basic types:
+     * <ul>
+     * <li>String</li>
+     * <li>int</li>
+     * </ul>
+     *
+     * <p>
+     *
+     * This will use the passed locale handler to produce
+     * error messages from commands. The locale handler
+     * can also be used to pre-process commands be the
+     * command manager registers them to allow for the
+     * order of arguments to be changed
+     *
+     * @param localeHandler
+     *         The locale handler to use
+     */
+    public CommandManager(CommandLocaleHandler localeHandler) {
+        this.localeHandler = localeHandler;
         addParser(String.class, new StringParser());
         addParser(int.class, new IntegerParser());
     }
@@ -123,7 +148,7 @@ public class CommandManager {
                 throw new CommandRegisterException("You must have a 'caller' argument");
             }
 
-            String[] args = command.value().split("\\s");
+            String[] args = localeHandler.getCommand(command.value()).split("\\s");
             Class<?>[] methodArgs = method.getParameterTypes();
             Annotation[][] methodArgAnnotations = method.getParameterAnnotations();
             int argIndex = 1; // Skip the 'caller' argument
@@ -255,7 +280,7 @@ public class CommandManager {
      */
     public void execute(Object caller, String command) throws CommandException {
         // lastError encountered whilst executing.
-        String lastError = null;
+        CommandError lastError = null;
         String[] args = split(command);
         // Stores the states we can return to if the current route fails
         Stack<CommandState> toTry = new Stack<>();
@@ -276,8 +301,8 @@ public class CommandManager {
             if (offset == args.length) {
                 if (currentNode.methods.size() == 0) {
                     // No command here
-                    if (lastError == null) {
-                        lastError = "Unknown command";
+                    if (lastError == null || lastError.getPriority() < 1) {
+                        lastError = new CommandError(1, "command.unknown");
                     }
                     continue;
                 }
@@ -288,9 +313,11 @@ public class CommandManager {
                     if (type.isAssignableFrom(caller.getClass())) {
 
                         for (ArgumentValidator t : method.argumentValidators) {
-                            String error = t.validate(null, caller);
+                            CommandError error = t.validate(null, caller);
                             if (error != null) {
-                                lastError = error;
+                                if (lastError == null || lastError.getPriority() < error.getPriority()) {
+                                    lastError = error;
+                                }
                                 continue callCheck;
                             }
                         }
@@ -308,7 +335,9 @@ public class CommandManager {
                         return;
                     } else {
                         // Incorrect caller
-                        lastError = "You cannot call this command";
+                        if (lastError == null || lastError.getPriority() < 1) {
+                            lastError = new CommandError(1, "command.incorrect.caller");
+                        }
                     }
                 }
                 continue;
@@ -322,16 +351,20 @@ public class CommandManager {
                 try {
                     out = argumentNode.parser.parse(arg);
                 } catch (ParserException e) {
-                    lastError = e.getMessage();
+                    if (lastError == null || lastError.getPriority() < e.getError().getPriority()) {
+                        lastError = e.getError();
+                    }
                     continue;
                 }
                 if (out == null) {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
-                    String error = type.validate(arg, out);
+                    CommandError error = type.validate(arg, out);
                     if (error != null) {
-                        lastError = error;
+                        if (lastError == null || lastError.getPriority() < error.getPriority()) {
+                            lastError = error;
+                        }
                         continue argTypes;
                     }
                 }
@@ -345,10 +378,10 @@ public class CommandManager {
                 toTry.add(new CommandState(newNode, arguments, offset + 1));
             }
         }
-        if (lastError == null) {
-            lastError = "Unknown command";
+        if (lastError == null || lastError.getPriority() < 1) {
+            lastError = new CommandError(1, "command.unknown");
         }
-        throw new CommandException(lastError);
+        throw new CommandException(localeHandler.getError(lastError));
     }
 
     public List<String> complete(String name, String... args) {
@@ -397,7 +430,7 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
-                    String error = type.validate(arg, out);
+                    CommandError error = type.validate(arg, out);
                     if (error != null) {
                         continue argTypes;
                     }

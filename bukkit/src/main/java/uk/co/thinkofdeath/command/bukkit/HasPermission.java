@@ -1,6 +1,7 @@
 package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.command.CommandSender;
+import uk.co.thinkofdeath.command.CommandError;
 import uk.co.thinkofdeath.command.types.ArgumentValidator;
 import uk.co.thinkofdeath.command.types.TypeHandler;
 
@@ -32,10 +33,10 @@ class HasPermissionHandler implements ArgumentValidator<CommandSender> {
     }
 
     @Override
-    public String validate(String argStr, CommandSender argument) {
+    public CommandError validate(String argStr, CommandSender argument) {
         if (argument.hasPermission(permission)) {
             return null;
         }
-        return "You do not have permission to use this";
+        return new CommandError(3, "bukkit.no-permission");
     }
 }

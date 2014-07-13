@@ -16,11 +16,19 @@
 
 package uk.co.thinkofdeath.command.parsers;
 
+import uk.co.thinkofdeath.command.CommandError;
+
 /**
  * Thrown if a parser is unable to parse the argument
  */
 public class ParserException extends Exception {
-    public ParserException(String message) {
-        super(message);
+    private final CommandError error;
+
+    public ParserException(CommandError error) {
+        this.error = error;
+    }
+
+    public CommandError getError() {
+        return error;
     }
 }

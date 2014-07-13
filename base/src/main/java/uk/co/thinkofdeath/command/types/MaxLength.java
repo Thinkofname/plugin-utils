@@ -16,6 +16,8 @@
 
 package uk.co.thinkofdeath.command.types;
 
+import uk.co.thinkofdeath.command.CommandError;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -44,9 +46,9 @@ class MaxLengthHandler implements ArgumentValidator<String> {
     }
 
     @Override
-    public String validate(String argStr, String argument) {
+    public CommandError validate(String argStr, String argument) {
         if (argument.length() > max) {
-            return String.format("Argument '" + argument + "' is longer than " + max);
+            return new CommandError(3, "validator.maxlength", argument, max);
         }
         return null;
     }

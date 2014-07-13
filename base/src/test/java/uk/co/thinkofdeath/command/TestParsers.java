@@ -147,7 +147,7 @@ public class TestParsers {
                     try {
                         out[i] = Integer.parseInt(args[i]);
                     } catch (NumberFormatException e) {
-                        throw new ParserException(e.getMessage());
+                        throw new ParserException(new CommandError(2, e.getMessage()));
                     }
                 }
                 return out;
