@@ -33,25 +33,27 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 /**
- * Requires the player to have the permission node
+ * Requires the player to have at least one of the permission nodes
  */
 public @interface HasPermission {
-    String value();
+    String[] value();
 }
 
 
 class HasPermissionHandler implements ArgumentValidator<CommandSender> {
 
-    private final String permission;
+    private final String[] permissions;
 
     HasPermissionHandler(HasPermission hasPermission) {
-        permission = hasPermission.value();
+        permissions = hasPermission.value();
     }
 
     @Override
     public CommandError validate(String argStr, CommandSender argument) {
-        if (argument.hasPermission(permission)) {
-            return null;
+        for (String permission : permissions) {
+            if (argument.hasPermission(permission)) {
+                return null;
+            }
         }
         return new CommandError(3, "bukkit.no-permission");
     }
