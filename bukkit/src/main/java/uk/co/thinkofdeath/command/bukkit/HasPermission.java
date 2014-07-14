@@ -37,20 +37,35 @@ import java.lang.annotation.Target;
  */
 public @interface HasPermission {
     String[] value();
+    boolean wildcard() default false;
 }
 
 
 class HasPermissionHandler implements ArgumentValidator<CommandSender> {
 
     private final String[] permissions;
+    private final boolean wildcard;
 
     HasPermissionHandler(HasPermission hasPermission) {
         permissions = hasPermission.value();
+        wildcard = hasPermission.wildcard();
     }
 
     @Override
     public CommandError validate(String argStr, CommandSender argument) {
         for (String permission : permissions) {
+            if (wildcard) {
+                String[] parts = permission.split("\\.");
+                StringBuilder current = new StringBuilder();
+                for (int i = 0; i < parts.length - 1; i++) {
+                    String part = parts[i];
+                    current.append(part);
+                    if (argument.hasPermission(current + ".*")) {
+                        return null;
+                    }
+                    current.append(".");
+                }
+            }
             if (argument.hasPermission(permission)) {
                 return null;
             }
