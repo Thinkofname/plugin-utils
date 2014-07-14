@@ -37,6 +37,7 @@ import java.lang.annotation.Target;
  */
 public @interface HasPermission {
     String[] value();
+
     boolean wildcard() default false;
 }
 
@@ -54,20 +55,24 @@ class HasPermissionHandler implements ArgumentValidator<CommandSender> {
     @Override
     public CommandError validate(String argStr, CommandSender argument) {
         for (String permission : permissions) {
-            if (wildcard) {
-                String[] parts = permission.split("\\.");
-                StringBuilder current = new StringBuilder();
-                for (int i = 0; i < parts.length - 1; i++) {
-                    String part = parts[i];
-                    current.append(part);
-                    if (argument.hasPermission(current + ".*")) {
-                        return null;
-                    }
-                    current.append(".");
-                }
-            }
+            // Check for the permission
             if (argument.hasPermission(permission)) {
                 return null;
+            }
+            // If the permission was manually set to false
+            // don't bother with the wildcards
+            if (!argument.isPermissionSet(permission) && wildcard) {
+                String perm = permission;
+                while (perm.indexOf('.') != -1) {
+                    perm = perm.substring(0, perm.lastIndexOf('.'));
+                    if (argument.isPermissionSet(perm + ".*")) {
+                        if (argument.hasPermission(perm + ".*")) {
+                            return null;
+                        } else {
+                            return new CommandError(3, "bukkit.no-permission");
+                        }
+                    }
+                }
             }
         }
         return new CommandError(3, "bukkit.no-permission");
