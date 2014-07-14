@@ -18,6 +18,7 @@ Base
 ----
 
 Javadocs: http://ci.thinkofdeath.co.uk/job/command/ws/base/target/site/apidocs/index.html
+
 Usage examples: http://ci.thinkofdeath.co.uk/job/command/ws/base/target/site/apidocs/uk/co/thinkofdeath/command/CommandManager.html
 
 Maven:
