@@ -20,8 +20,8 @@ import uk.co.thinkofdeath.command.parsers.ArgumentParser;
 import uk.co.thinkofdeath.command.parsers.IntegerParser;
 import uk.co.thinkofdeath.command.parsers.ParserException;
 import uk.co.thinkofdeath.command.parsers.StringParser;
-import uk.co.thinkofdeath.command.types.ArgumentValidator;
-import uk.co.thinkofdeath.command.types.TypeHandler;
+import uk.co.thinkofdeath.command.validators.ArgumentValidator;
+import uk.co.thinkofdeath.command.validators.TypeHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -84,7 +84,7 @@ import java.util.regex.Pattern;
  * </code></pre>
  *
  * Argument validator annotations can be used to place limits on
- * certain arguments. {@link uk.co.thinkofdeath.command.types.MaxLength}
+ * certain arguments. {@link uk.co.thinkofdeath.command.validators.MaxLength}
  * for example applies to String arguments and will check if
  * the provided argument is smaller or equal to its argument and
  * if its not the command will fail. This can also be used to
@@ -202,7 +202,7 @@ public class CommandManager {
      * Additional annotations may be added to the parameters
      * to impose limits on them. The annotation must have
      * a type handler annotation on them for the executor
-     * use them. For example {@link uk.co.thinkofdeath.command.types.MaxLength}
+     * use them. For example {@link uk.co.thinkofdeath.command.validators.MaxLength}
      *
      * @param commandHandler
      *         The command handler to be added
@@ -289,8 +289,14 @@ public class CommandManager {
                 throw new CommandRegisterException("Duplicate command");
             }
 
-            ArgumentValidator[] argumentValidators = processCommandAnnotations(methodArgs[0],
+            ArgumentValidator[] argumentValidators1 = processCommandAnnotations(methodArgs[0],
                     methodArgAnnotations[0]);
+            ArgumentValidator[] argumentValidators2 = processCommandAnnotations(methodArgs[0],
+                    method.getAnnotations());
+
+            ArgumentValidator[] argumentValidators = new ArgumentValidator[argumentValidators1.length + argumentValidators2.length];
+            System.arraycopy(argumentValidators1, 0, argumentValidators, 0, argumentValidators1.length);
+            System.arraycopy(argumentValidators2, 0, argumentValidators, argumentValidators1.length, argumentValidators2.length);
 
             currentNode.methods.put(methodArgs[0],
                     new CommandNode.CommandMethod(

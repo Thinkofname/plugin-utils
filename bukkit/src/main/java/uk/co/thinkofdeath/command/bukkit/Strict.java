@@ -18,8 +18,8 @@ package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.entity.Player;
 import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.types.ArgumentValidator;
-import uk.co.thinkofdeath.command.types.TypeHandler;
+import uk.co.thinkofdeath.command.validators.ArgumentValidator;
+import uk.co.thinkofdeath.command.validators.TypeHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
         value = StrictHandler.class,
         clazz = Player.class
 )
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 /**
  * Requires the player to be an exact match instead of

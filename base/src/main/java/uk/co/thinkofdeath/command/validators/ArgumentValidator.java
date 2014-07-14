@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.types;
+package uk.co.thinkofdeath.command.validators;
 
 import uk.co.thinkofdeath.command.CommandError;
 
 /**
  * An argument validator is used to apply limits to
  * specific argument of a command. This must be used
- * in-conjunction with a {@link uk.co.thinkofdeath.command.types.TypeHandler}
+ * in-conjunction with a {@link uk.co.thinkofdeath.command.validators.TypeHandler}
  * annotation that points to this class.
  *
  * As well as having the validate method and implementing

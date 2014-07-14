@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.types;
+package uk.co.thinkofdeath.command.validators;
 
 import uk.co.thinkofdeath.command.CommandError;
 
@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
         value = RangeHandler.class,
         clazz = int.class
 )
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 /**
  * Requires the integer to be between min and max

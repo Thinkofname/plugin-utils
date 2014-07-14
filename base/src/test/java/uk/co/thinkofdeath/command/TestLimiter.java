@@ -17,10 +17,10 @@
 package uk.co.thinkofdeath.command;
 
 import org.junit.Test;
-import uk.co.thinkofdeath.command.types.ArgumentValidator;
-import uk.co.thinkofdeath.command.types.MaxLength;
-import uk.co.thinkofdeath.command.types.Range;
-import uk.co.thinkofdeath.command.types.TypeHandler;
+import uk.co.thinkofdeath.command.validators.ArgumentValidator;
+import uk.co.thinkofdeath.command.validators.MaxLength;
+import uk.co.thinkofdeath.command.validators.Range;
+import uk.co.thinkofdeath.command.validators.TypeHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

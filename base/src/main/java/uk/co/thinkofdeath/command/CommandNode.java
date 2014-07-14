@@ -16,7 +16,7 @@
 
 package uk.co.thinkofdeath.command;
 
-import uk.co.thinkofdeath.command.types.ArgumentValidator;
+import uk.co.thinkofdeath.command.validators.ArgumentValidator;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

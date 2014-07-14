@@ -14,17 +14,42 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.types;
+package uk.co.thinkofdeath.command.validators;
+
+import uk.co.thinkofdeath.command.CommandError;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.ANNOTATION_TYPE)
+@TypeHandler(
+        value = MaxLengthHandler.class,
+        clazz = String.class
+)
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TypeHandler {
-    Class<? extends ArgumentValidator> value();
+/**
+ * Requires the passed string to have a length less than
+ * or equal to the value
+ */
+public @interface MaxLength {
+    int value();
+}
 
-    Class<?> clazz();
+class MaxLengthHandler implements ArgumentValidator<String> {
+
+    private final int max;
+
+    MaxLengthHandler(MaxLength maxLength) {
+        max = maxLength.value();
+    }
+
+    @Override
+    public CommandError validate(String argStr, String argument) {
+        if (argument.length() > max) {
+            return new CommandError(3, "validator.maxlength", argument, max);
+        }
+        return null;
+    }
 }

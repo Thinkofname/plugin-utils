@@ -18,8 +18,8 @@ package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.command.CommandSender;
 import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.types.ArgumentValidator;
-import uk.co.thinkofdeath.command.types.TypeHandler;
+import uk.co.thinkofdeath.command.validators.ArgumentValidator;
+import uk.co.thinkofdeath.command.validators.TypeHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
         value = HasPermissionHandler.class,
         clazz = CommandSender.class
 )
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 /**
  * Requires the player to have at least one of the permission nodes
