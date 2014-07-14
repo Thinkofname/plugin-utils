@@ -469,7 +469,7 @@ public class CommandManager {
         if (lastError == null || lastError.getPriority() < 1) {
             lastError = new CommandError(1, "command.unknown");
         }
-        throw new CommandException(localeHandler.getError(lastError));
+        throw new CommandException(lastError, localeHandler.getError(lastError));
     }
 
 

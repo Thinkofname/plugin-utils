@@ -21,7 +21,19 @@ package uk.co.thinkofdeath.command;
  * reason
  */
 public class CommandException extends Exception {
-    CommandException(String message) {
+
+    private final CommandError error;
+
+    CommandException(CommandError error, String message) {
         super(message);
+        this.error = error;
+    }
+
+    /**
+     * The error that caused this exception
+     * @return The error
+     */
+    public CommandError getError() {
+        return error;
     }
 }
