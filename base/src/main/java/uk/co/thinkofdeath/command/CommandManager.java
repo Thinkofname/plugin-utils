@@ -99,17 +99,17 @@ import java.util.regex.Pattern;
  * }
  *
  * &#064;Command("do something ?")
- * public void doSomethingSmall(CommandSender sender, @Range(0, 5) int something) {
+ * public void doSomethingSmall(CommandSender sender, @Range(min = 0, max = 5) int something) {
  *     // If something is between (inclusive) 0 and 5
  * }
  *
  * &#064;Command("do something ?")
- * public void doSomethingMid(CommandSender sender, @Range(6, 15) int something) {
+ * public void doSomethingMid(CommandSender sender, @Range(min = 6, max = 15) int something) {
  *     // If something is between (inclusive) 6 and 15
  * }
  *
  * &#064;Command("do something ?")
- * public void doSomethingLarge(CommandSender sender, @Range(16) int something) {
+ * public void doSomethingLarge(CommandSender sender, @Range(min = 16) int something) {
  *     // If something is greater or equal to 16
  * }
  * </code></pre>
