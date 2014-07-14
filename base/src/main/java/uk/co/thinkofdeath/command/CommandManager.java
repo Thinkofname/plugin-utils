@@ -35,6 +35,84 @@ import java.util.regex.Pattern;
  * A CommandManager handles registration and parsing
  * of commands as well as provided methods for completing
  * commands.
+ *
+ * <p>
+ *
+ * This works using reflection and a series of annotations
+ * to define commands. The {@link uk.co.thinkofdeath.command.Command}
+ * annotation is used to define the syntax of command, words
+ * are treated as sub-commands while `?` are markers for
+ * where user controlled arguments will go. For example:
+ *
+ * <pre><code>
+ * &#064;Command("tp ?")
+ * public void teleport(Player sender, Player target) {
+ *     // Code to teleport here
+ * }</code></pre>
+ *
+ * For more information on the {@link uk.co.thinkofdeath.command.Command}
+ * annotation's handling see: {@link #register(CommandHandler)}
+ *
+ * <p>
+ *
+ * The command system supports overloading commands so that
+ * different argument/caller types will call different methods
+ * for the same command syntax. This also allow for you to
+ * require a specific caller for certain commands For example:
+ *
+ * <pre><code>
+ * &#064;Command("tp ?")
+ * public void teleport(Player sender, Player target) {
+ *     // Only a Player (or sub-class of) can call this
+ * }
+ *
+ * &#064;Command("tp ? ?")
+ * public void teleport(ConsoleCommandSender sender, Player a, Player b) {
+ *     // If the console calls `/tp a b`
+ * }
+ *
+ * &#064;Command("tp ? ?")
+ * public void teleport(Player sender, Player a, Player b) {
+ *     // If the player calls `/tp a b`
+ * }
+ *
+ * &#064;Command("tp ? ?")
+ * public void teleport(CommandSender sender, Player a, World target) {
+ *     // If the CommandSender calls `/tp a world` but with
+ *     // a world instead of a player
+ * }
+ * </code></pre>
+ *
+ * Argument validator annotations can be used to place limits on
+ * certain arguments. {@link uk.co.thinkofdeath.command.types.MaxLength}
+ * for example applies to String arguments and will check if
+ * the provided argument is smaller or equal to its argument and
+ * if its not the command will fail. This can also be used to
+ * allow the same argument to go to different methods based on
+ * its value. For example:
+ *
+ * <pre><code>
+ * &#064;Command("player set nick ?")
+ * public void setNick(Player player, @MaxLength(16) String newNick) {
+ *     // If newNick is more than 16 characters this will not
+ *     // be called
+ * }
+ *
+ * &#064;Command("do something ?")
+ * public void doSomethingSmall(CommandSender sender, @Range(0, 5) int something) {
+ *     // If something is between (inclusive) 0 and 5
+ * }
+ *
+ * &#064;Command("do something ?")
+ * public void doSomethingMid(CommandSender sender, @Range(6, 15) int something) {
+ *     // If something is between (inclusive) 6 and 15
+ * }
+ *
+ * &#064;Command("do something ?")
+ * public void doSomethingLarge(CommandSender sender, @Range(16) int something) {
+ *     // If something is greater or equal to 16
+ * }
+ * </code></pre>
  */
 public class CommandManager {
 
