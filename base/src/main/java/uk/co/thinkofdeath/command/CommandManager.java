@@ -113,6 +113,8 @@ import java.util.regex.Pattern;
  *     // If something is greater or equal to 16
  * }
  * </code></pre>
+ *
+ * Argument validators placed on the method will apply to the first argument
  */
 public class CommandManager {
 
