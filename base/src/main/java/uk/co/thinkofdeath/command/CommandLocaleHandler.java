@@ -39,7 +39,7 @@ public interface CommandLocaleHandler {
      * error
      *
      * @param error
-     *         The error containing the infomation
+     *         The error containing the information
      *         needed to display the error
      * @return The localised string
      */

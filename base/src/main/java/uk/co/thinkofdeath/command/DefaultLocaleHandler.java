@@ -24,6 +24,7 @@ import java.util.HashMap;
 public class DefaultLocaleHandler implements CommandLocaleHandler {
 
     protected HashMap<String, String> strings = new HashMap<>();
+
     {
         strings.put("parser.integer.invalid", "'%s' is not an integer");
         strings.put("parser.enum.invalid", "'%s' is not a valid value");
@@ -44,6 +45,10 @@ public class DefaultLocaleHandler implements CommandLocaleHandler {
         if (!strings.containsKey(error.getKey())) {
             return error.getKey();
         }
-        return String.format(strings.get(error.getKey()), error.getArgs());
+        Object[] args = new Object[error.getArgumentCount()];
+        for (int i = 0; i < args.length; i++) {
+            args[i] = error.getArgument(i);
+        }
+        return String.format(strings.get(error.getKey()), args);
     }
 }

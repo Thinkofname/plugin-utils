@@ -52,12 +52,26 @@ public class CommandError {
     }
 
     /**
-     * Any additional arguments required to display
-     * the error
+     * Returns the number of additional arguments
+     * to the message this error has
      *
-     * @return The arguments
+     * @return The number of arguments
      */
-    public Object[] getArgs() {
-        return args;
+    public int getArgumentCount() {
+        return args.length;
+    }
+
+    /**
+     * Returns the argument at the index.
+     *
+     * @param i
+     *         The index of the argument
+     * @return The argument
+     * @throws java.lang.ArrayIndexOutOfBoundsException
+     *         if the index is less than zero or greater
+     *         than or equal {@link #getArgumentCount()}
+     */
+    public Object getArgument(int i) {
+        return args[i];
     }
 }
