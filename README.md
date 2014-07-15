@@ -9,7 +9,7 @@ Maven repo:
 <repositories>
     <repository>
         <id>think-repo</id>
-        <url>http://ci.thinkofdeath.co.uk/plugin/repository/everything/</url>
+        <url>http://repo.thinkofdeath.co.uk/</url>
     </repository>
 </repositories>
 ```
@@ -27,7 +27,7 @@ Maven:
     <dependency>
         <groupId>uk.co.thinkofdeath</groupId>
         <artifactId>command-base</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -43,7 +43,7 @@ Maven:
     <dependency>
         <groupId>uk.co.thinkofdeath</groupId>
         <artifactId>command-bukkit</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
