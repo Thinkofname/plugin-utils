@@ -46,24 +46,24 @@ public class EnchantmentParser implements ArgumentParser<Enchantment> {
     private static final Map<String, Enchantment> DEFAULT;
     
     static {
-    	
-    	ImmutableMap.Builder<String, Enchantment> map = new ImmutableMap.Builder<>();
-    	
-    	for(Field f : Enchantment.class.getFields()){
-    		
-    		if(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && Enchantment.class.isAssignableFrom(f.getType())){
-    			
-    			try {
-					map.put(f.getName().toLowerCase(), (Enchantment) f.get(null));
-				}
-				catch (IllegalArgumentException | IllegalAccessException e) {
-					Bukkit.getLogger().severe("Exception building default map for " + EnchantmentParser.class.getName() + " at element " + f.getName());
-					e.printStackTrace();
-				}
-    		}
-    	}
-    	
-    	DEFAULT = map.build();
+        
+        ImmutableMap.Builder<String, Enchantment> map = new ImmutableMap.Builder<>();
+        
+        for(Field f : Enchantment.class.getFields()){
+            
+            if(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && Enchantment.class.isAssignableFrom(f.getType())){
+                
+                try {
+                    map.put(f.getName().toLowerCase(), (Enchantment) f.get(null));
+                }
+                catch (IllegalArgumentException | IllegalAccessException e) {
+                    Bukkit.getLogger().severe("Exception building default map for " + EnchantmentParser.class.getName() + " at element " + f.getName());
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        DEFAULT = map.build();
     }
     
     public EnchantmentParser(Plugin plugin, Map<String, Enchantment> mappings) {
@@ -72,7 +72,7 @@ public class EnchantmentParser implements ArgumentParser<Enchantment> {
     }
 
     public EnchantmentParser(Plugin plugin){
-    	this(plugin, DEFAULT);
+        this(plugin, DEFAULT);
     }
     
     @Override
@@ -88,9 +88,9 @@ public class EnchantmentParser implements ArgumentParser<Enchantment> {
     public Set<String> complete(String argument) {
         HashSet<String> completions = new HashSet<>();
         for (String name : map.keySet()) {
-        	if(name.startsWith(argument.toLowerCase())){
-        		completions.add(name);
-        	}
+            if(name.startsWith(argument.toLowerCase())){
+                completions.add(name);
+            }
         }
         return completions;
     }
