@@ -18,7 +18,9 @@ package uk.co.thinkofdeath.command.parsers;
 
 import uk.co.thinkofdeath.command.CommandError;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,22 +32,53 @@ import java.util.Set;
 public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
 
     private final Class<T> e;
+    private final boolean ignoreUnderscores;
+    
+    private final Map<String, T> underscoreless;
+    
+    /**
+     * Creates an enum parser for the enum
+     *
+     * @param e
+     *         The class of the enum to use
+     * @param ignoreUnderscores
+     *         Whether to ignore underscores when matching enum names
+     */
+    public EnumParser(Class<T> e, boolean ignoreUnderscores) {
+        this.e = e;
+        this.ignoreUnderscores = ignoreUnderscores;
+        if(ignoreUnderscores) {
+            underscoreless = new HashMap<>();
+            for(T v : e.getEnumConstants()){
+                underscoreless.put(v.name().replace("_", "").toLowerCase(), v);
+            }
+        } else {
+            underscoreless = null;
+        }
+    }
 
     /**
-     * Creates an enum parser for the num
+     * Creates an enum parser for the enum, defaults to acknowledge underscores
      *
      * @param e
      *         The class of the enum to use
      */
-    public EnumParser(Class<T> e) {
-        this.e = e;
+    public EnumParser(Class<T> e){
+        this(e, false);
     }
-
+    
     @Override
     public T parse(String argument) throws ParserException {
-        for (T v : e.getEnumConstants()) {
-            if (v.name().equalsIgnoreCase(argument)) {
+        if(ignoreUnderscores){
+            T v = underscoreless.get(argument.replace("_", "").toLowerCase());
+            if(v != null){
                 return v;
+            }
+        } else {  
+            for (T v : e.getEnumConstants()) {
+                if (v.name().equalsIgnoreCase(argument)) {
+                    return v;
+                }
             }
         }
         throw new ParserException(new CommandError(2, "parser.enum.invalid", argument));
@@ -53,10 +86,10 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
 
     @Override
     public Set<String> complete(String argument) {
-        argument = argument.toUpperCase();
+        argument = argument.toLowerCase();
         HashSet<String> ret = new HashSet<>();
         for (T v : e.getEnumConstants()) {
-            if (v.name().toUpperCase().startsWith(argument)) {
+            if (v.name().toLowerCase().startsWith(argument)) {
                 ret.add(v.name());
             }
         }

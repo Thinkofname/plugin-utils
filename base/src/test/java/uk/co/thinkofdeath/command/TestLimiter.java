@@ -17,9 +17,11 @@
 package uk.co.thinkofdeath.command;
 
 import org.junit.Test;
+
 import uk.co.thinkofdeath.command.validators.ArgumentValidator;
 import uk.co.thinkofdeath.command.validators.MaxLength;
 import uk.co.thinkofdeath.command.validators.Range;
+import uk.co.thinkofdeath.command.validators.Regex;
 import uk.co.thinkofdeath.command.validators.TypeHandler;
 
 import java.lang.annotation.ElementType;
@@ -45,6 +47,7 @@ public class TestLimiter {
         commandManager.execute("hello", "world testing time set 55");
     }
 
+    @Test
     public void limitRange() throws CommandException {
         CommandManager commandManager = new CommandManager();
         commandManager.register(new CommandHandler() {
@@ -81,6 +84,18 @@ public class TestLimiter {
         commandManager.execute("hello", "world testing time set 55");
     }
 
+    @Test(expected = CommandException.class)
+    public void limitRegex() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?")
+            public void test(String sender, @Regex("[a-zA-Z_][0-9a-zA-Z_]*") String name) {
+                fail("Shouldn't be called");
+            }
+        });
+        commandManager.execute("hello", "test 0hello_world123_");
+    }
+    
     @Test()
     public void limitCustom() throws CommandException {
         CommandManager commandManager = new CommandManager();

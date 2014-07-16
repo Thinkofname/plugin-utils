@@ -22,8 +22,11 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffectType;
+
 import uk.co.thinkofdeath.command.CommandException;
 import uk.co.thinkofdeath.command.CommandLocaleHandler;
 import uk.co.thinkofdeath.command.CommandManager;
@@ -88,7 +91,9 @@ public class BukkitCommandManager extends CommandManager implements TabExecutor 
         super(localeHandler);
         addParser(World.class, new WorldParser(plugin));
         addParser(Player.class, new PlayerParser(plugin));
-        addParser(Material.class, new EnumParser<>(Material.class));
+        addParser(Enchantment.class, new EnchantmentParser(plugin));
+        addParser(PotionEffectType.class, new PotionParser(plugin));
+        addParser(Material.class, new EnumParser<>(Material.class, true));
     }
 
     @Override

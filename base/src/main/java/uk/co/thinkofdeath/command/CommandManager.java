@@ -17,9 +17,11 @@
 package uk.co.thinkofdeath.command;
 
 import uk.co.thinkofdeath.command.parsers.ArgumentParser;
+import uk.co.thinkofdeath.command.parsers.DoubleParser;
 import uk.co.thinkofdeath.command.parsers.IntegerParser;
 import uk.co.thinkofdeath.command.parsers.ParserException;
 import uk.co.thinkofdeath.command.parsers.StringParser;
+import uk.co.thinkofdeath.command.parsers.UUIDParser;
 import uk.co.thinkofdeath.command.validators.ArgumentValidator;
 import uk.co.thinkofdeath.command.validators.TypeHandler;
 
@@ -158,6 +160,8 @@ public class CommandManager {
         this.localeHandler = localeHandler;
         addParser(String.class, new StringParser());
         addParser(int.class, new IntegerParser());
+        addParser(double.class, new DoubleParser());
+        addParser(UUID.class, new UUIDParser());
     }
 
     /**
@@ -416,7 +420,12 @@ public class CommandManager {
                         try {
                             method.method.invoke(method.owner, processedArguments);
                         } catch (IllegalAccessException | InvocationTargetException e) {
-                            throw new RuntimeException(e);
+                            // Propagate errors
+                            if(e.getCause() != null && e.getCause() instanceof Error) {
+                                throw (Error) e.getCause();
+                            } else {
+                                throw new RuntimeException(e);
+                            }
                         }
                         return;
                     } else {
