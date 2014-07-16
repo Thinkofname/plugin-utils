@@ -36,6 +36,7 @@ public class DefaultLocaleHandler implements CommandLocaleHandler {
         strings.put("validator.range.min", "'%d' must be greater or equal to '%d'");
         strings.put("validator.range.max", "'%d' must be lesser or equal to '%d'");
         strings.put("validator.regex", "'%s' is not %s");
+        strings.put("regex.valid", "valid input");
     }
 
     @Override
@@ -50,7 +51,12 @@ public class DefaultLocaleHandler implements CommandLocaleHandler {
         }
         Object[] args = new Object[error.getArgumentCount()];
         for (int i = 0; i < args.length; i++) {
-            args[i] = error.getArgument(i);
+            Object arg = error.getArgument(i);
+            if (arg instanceof LocaleKey) {
+                args[i] = strings.get(((LocaleKey) arg).getKey());
+            } else {
+                args[i] = arg;
+            }
         }
         return String.format(strings.get(error.getKey()), args);
     }

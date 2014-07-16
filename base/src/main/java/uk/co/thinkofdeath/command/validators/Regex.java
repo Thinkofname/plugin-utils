@@ -17,6 +17,7 @@
 package uk.co.thinkofdeath.command.validators;
 
 import uk.co.thinkofdeath.command.CommandError;
+import uk.co.thinkofdeath.command.LocaleKey;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -36,17 +37,17 @@ import java.util.regex.Pattern;
 public @interface Regex {
     String value();
 
-    String expectedInputType() default "valid input";
+    String expectedInputType() default "regex.valid";
 }
 
 class RegexHandler implements ArgumentValidator<String> {
 
     private final Pattern regex;
-    private final String fail;
+    private final LocaleKey fail;
 
     RegexHandler(Regex regex) {
         this.regex = Pattern.compile(regex.value());
-        this.fail = regex.expectedInputType();
+        fail = new LocaleKey(regex.expectedInputType());
     }
 
     @Override
