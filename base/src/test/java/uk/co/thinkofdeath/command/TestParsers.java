@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -94,12 +95,80 @@ public class TestParsers {
         commandManager.execute("hello", "world testing time set cake");
     }
 
+    @Test
+    public void doubleParser() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            private double[] expected = {123.0, 0.0, -0.061, 100, 43E10, 65E-7};
+            private int current = 0;
+            @Command("test ?")
+            public void doubleTest(String sender, double arg) {
+                assertEquals(arg, expected[current++], 0.0);
+            }
+        });
+        commandManager.execute("tester", "test 123");
+        commandManager.execute("tester", "test 0");
+        commandManager.execute("tester", "test -0.061");
+        commandManager.execute("tester", "test 100D");
+        commandManager.execute("tester", "test 43E10");
+        commandManager.execute("tester", "test 65e-7f");
+    }
+
+    @Test(expected = CommandException.class)
+    public void doubleParserFail() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?")
+            public void doubleTest(String sender, double arg) {
+                fail();
+            }
+        });
+        commandManager.execute("tester", "test 334L");
+    }
+    
+    @Test(expected = CommandException.class)
+    public void doubleParserFailNaN() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?")
+            public void doubleTest(String sender, double arg) {
+                fail();
+            }
+        });
+        commandManager.execute("tester", "test NaN");
+    }
+    
+    @Test(expected = CommandException.class)
+    public void doubleParserFailInfinity() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?")
+            public void doubleTest(String sender, double arg) {
+                fail();
+            }
+        });
+        commandManager.execute("tester", "test Infinity");
+    }
+
+    @Test(expected = CommandException.class)
+    public void doubleWrongType() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("world ? time set ?")
+            public void test(String sender, String name, double newTime) {
+                fail("Shouldn't be called");
+            }
+        });
+        commandManager.execute("hello", "world testing time set cake");
+    }
+    
     static enum TestEnum {
         HELLO,
         TESTING,
         CAKE,
         COLD,
-        ABC
+        ABC,
+        UNDER_SCORE
     }
 
     @Test
@@ -127,6 +196,23 @@ public class TestParsers {
             // All ok
         }
     }
+    
+    @Test
+    public void enumParserUnderscore() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.addParser(TestEnum.class, new EnumParser<>(TestEnum.class, true));
+        commandManager.register(new CommandHandler() {
+            private int count = 0;
+
+            @Command("test ?")
+            public void enumTest(String sender, TestEnum testEnum) {
+                assertEquals(TestEnum.UNDER_SCORE, testEnum);
+            }
+        });
+
+        commandManager.execute("test", "test uNdErScOrE");
+        commandManager.execute("test", "test under_SCORE");
+    }
 
     @Test
     public void enumParserComplete() throws CommandException {
@@ -151,6 +237,58 @@ public class TestParsers {
         Util.same(Arrays.asList("ABC", "abcd"), commandManager.complete("test ab"));
     }
 
+    @Test
+    public void uuidParser() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            private UUID[] expected = 
+                {
+                    UUID.fromString("f34d4287-316d-4e43-b381-2dffc7f05b82"),
+                    UUID.fromString("a122d0c7-2c6d-4709-a2c1-f452212af850"),
+                    UUID.fromString("efa4eba3-04ab-4fe9-a726-97de00d92ea0"),
+                    UUID.fromString("f2f9bd2d-6af9-4d83-b25d-9804a22a1483"),
+                    UUID.fromString("0a65a943-7a2e-4abd-9b27-b53b9595140b")
+                };
+            private int current = 0;
+
+            @Command("test ?")
+            public void uuidTest(String sender, UUID arg) {
+                assertEquals(arg, expected[current++]);
+            }
+        });
+        commandManager.execute("tester", "test f34d4287-316d-4e43-b381-2dffc7f05b82");
+        commandManager.execute("tester", "test a122d0c7-2c6d-4709-a2c1-f452212af850");
+        commandManager.execute("tester", "test efa4eba3-04ab-4fe9-a726-97de00d92ea0");
+        commandManager.execute("tester", "test f2f9bd2d6af94d83b25d9804a22a1483");
+        commandManager.execute("tester", "test 0a65a9437a2e4abd9b27b53b9595140b"); 
+    }
+    
+    @Test(expected = CommandException.class)
+    public void uuidParserFail() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?")
+            public void uuidTest(String sender, UUID arg) {
+                fail();
+            }
+        });
+        // first character is g
+        commandManager.execute("tester", "test g34d4287-316d-4e43-b381-2dffc7f05b82");
+    }
+    
+    @Test(expected = CommandException.class)
+    public void uuidParserFail2() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        commandManager.register(new CommandHandler() {
+            @Command("test ?")
+            public void uuidTest(String sender, UUID arg) {
+                fail();
+            }
+        });
+        // first character is g, now mojang-style
+        commandManager.execute("tester", "test g34d4287316d4e43b3812dffc7f05b82");
+    }
+    
     @Test
     public void customParser() throws CommandException {
         CommandManager commandManager = new CommandManager();

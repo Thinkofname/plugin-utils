@@ -23,5 +23,7 @@ public class DefaultBukkitLocaleHandler extends DefaultLocaleHandler {
         strings.put("bukkit.no-permission", "You do not have the permission to do this");
         strings.put("bukkit.no-player", "Could not find player '%s'");
         strings.put("bukkit.no-world", "Could not find world '%s'");
+        strings.put("bukkit.no-ench", "Could not find enchantment '%s'");
+        strings.put("bukkit.no-potion", "Could not find potion type '%s'");
     }
 }
