@@ -31,6 +31,7 @@ public class CommandException extends Exception {
 
     /**
      * The error that caused this exception
+     *
      * @return The error
      */
     public CommandError getError() {

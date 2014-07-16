@@ -33,9 +33,9 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
 
     private final Class<T> e;
     private final boolean ignoreUnderscores;
-    
+
     private final Map<String, T> underscoreless;
-    
+
     /**
      * Creates an enum parser for the enum
      *
@@ -47,9 +47,9 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
     public EnumParser(Class<T> e, boolean ignoreUnderscores) {
         this.e = e;
         this.ignoreUnderscores = ignoreUnderscores;
-        if(ignoreUnderscores) {
+        if (ignoreUnderscores) {
             underscoreless = new HashMap<>();
-            for(T v : e.getEnumConstants()){
+            for (T v : e.getEnumConstants()) {
                 underscoreless.put(v.name().replace("_", "").toLowerCase(), v);
             }
         } else {
@@ -63,18 +63,18 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
      * @param e
      *         The class of the enum to use
      */
-    public EnumParser(Class<T> e){
+    public EnumParser(Class<T> e) {
         this(e, false);
     }
-    
+
     @Override
     public T parse(String argument) throws ParserException {
-        if(ignoreUnderscores){
+        if (ignoreUnderscores) {
             T v = underscoreless.get(argument.replace("_", "").toLowerCase());
-            if(v != null){
+            if (v != null) {
                 return v;
             }
-        } else {  
+        } else {
             for (T v : e.getEnumConstants()) {
                 if (v.name().equalsIgnoreCase(argument)) {
                     return v;

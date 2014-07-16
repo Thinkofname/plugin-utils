@@ -29,11 +29,12 @@ public class DoubleParser implements ArgumentParser<Double> {
     public Double parse(String argument) throws ParserException {
         try {
             double v = Double.valueOf(argument);
-            
+
             // most command won't expect to handle special values
-            if(Double.isNaN(v) || Double.isInfinite(v))
-            	throw new NumberFormatException();
-            
+            if (Double.isNaN(v) || Double.isInfinite(v)) {
+                throw new NumberFormatException();
+            }
+
             return v;
         } catch (NumberFormatException e) {
             throw new ParserException(new CommandError(2, "parser.double.invalid", argument));

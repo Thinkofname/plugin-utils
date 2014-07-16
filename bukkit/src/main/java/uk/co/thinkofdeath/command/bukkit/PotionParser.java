@@ -16,12 +16,10 @@
 
 package uk.co.thinkofdeath.command.bukkit;
 
+import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
-
-import com.google.common.collect.ImmutableMap;
-
 import uk.co.thinkofdeath.command.CommandError;
 import uk.co.thinkofdeath.command.parsers.ArgumentParser;
 import uk.co.thinkofdeath.command.parsers.ParserException;
@@ -42,39 +40,32 @@ public class PotionParser implements ArgumentParser<PotionEffectType> {
     private final Plugin plugin;
 
     private final Map<String, PotionEffectType> map;
-    
     private static final Map<String, PotionEffectType> DEFAULT;
-    
+
     static {
-        
         ImmutableMap.Builder<String, PotionEffectType> map = new ImmutableMap.Builder<>();
-        
-        for(Field f : PotionEffectType.class.getFields()){
-            
-            if(Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && PotionEffectType.class.isAssignableFrom(f.getType())){
-                
+        for (Field f : PotionEffectType.class.getFields()) {
+            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && PotionEffectType.class.isAssignableFrom(f.getType())) {
                 try {
                     map.put(f.getName().toLowerCase(), (PotionEffectType) f.get(null));
-                }
-                catch (IllegalArgumentException | IllegalAccessException e) {
+                } catch (IllegalArgumentException | IllegalAccessException e) {
                     Bukkit.getLogger().severe("Exception building default map for " + PotionParser.class.getName() + " at element " + f.getName());
                     e.printStackTrace();
                 }
             }
         }
-        
         DEFAULT = map.build();
     }
-    
+
     public PotionParser(Plugin plugin, Map<String, PotionEffectType> mappings) {
         this.plugin = plugin;
         this.map = mappings;
     }
 
-    public PotionParser(Plugin plugin){
+    public PotionParser(Plugin plugin) {
         this(plugin, DEFAULT);
     }
-    
+
     @Override
     public PotionEffectType parse(String argument) throws ParserException {
         PotionEffectType potion = map.get(argument.toLowerCase());
@@ -88,7 +79,7 @@ public class PotionParser implements ArgumentParser<PotionEffectType> {
     public Set<String> complete(String argument) {
         HashSet<String> completions = new HashSet<>();
         for (String name : map.keySet()) {
-            if(name.startsWith(argument.toLowerCase())){
+            if (name.startsWith(argument.toLowerCase())) {
                 completions.add(name);
             }
         }

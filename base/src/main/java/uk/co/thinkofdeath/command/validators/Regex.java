@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
  */
 public @interface Regex {
     String value();
+
     String expectedInputType() default "valid input";
 }
 
@@ -42,7 +43,7 @@ class RegexHandler implements ArgumentValidator<String> {
 
     private final Pattern regex;
     private final String fail;
-    
+
     RegexHandler(Regex regex) {
         this.regex = Pattern.compile(regex.value());
         this.fail = regex.expectedInputType();
@@ -52,8 +53,7 @@ class RegexHandler implements ArgumentValidator<String> {
     public CommandError validate(String argStr, String argument) {
         if (regex.matcher(argument).matches()) {
             return null;
-        }
-        else {
+        } else {
             return new CommandError(3, "validator.regex", argument, regex, fail);
         }
     }

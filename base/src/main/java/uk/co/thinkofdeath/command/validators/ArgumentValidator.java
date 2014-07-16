@@ -34,8 +34,9 @@ public interface ArgumentValidator<T> {
      * Checks if the argument matches the specification declared
      * in the matching annotation.
      *
-     * @param argString The string that the parser used to
-     *                  obtain this argument. May be null
+     * @param argString
+     *         The string that the parser used to
+     *         obtain this argument. May be null
      * @param argument
      *         The argument to be validated, should
      *         be of the type declared in the type handler

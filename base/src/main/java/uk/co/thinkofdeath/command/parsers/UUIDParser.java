@@ -28,16 +28,16 @@ import java.util.regex.Pattern;
  * Allows for any valid UUID, both standard style and Mojang style
  */
 public class UUIDParser implements ArgumentParser<UUID> {
-    
+
     private final Pattern mojangPattern = Pattern.compile("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{12})");
-    
+
     @Override
     public UUID parse(String argument) throws ParserException {
         try {
             return UUID.fromString(argument);
         } catch (IllegalArgumentException e) {
             Matcher m = mojangPattern.matcher(argument);
-            if(!m.matches()){
+            if (!m.matches()) {
                 throw new ParserException(new CommandError(2, "parser.uuid.invalid", argument));
             }
             String reformatted = String.format("%s-%s-%s-%s-%s", m.group(1), m.group(2), m.group(3), m.group(4), m.group(5));

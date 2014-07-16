@@ -17,21 +17,14 @@
 package uk.co.thinkofdeath.command;
 
 import org.junit.Test;
-
-import uk.co.thinkofdeath.command.validators.ArgumentValidator;
-import uk.co.thinkofdeath.command.validators.MaxLength;
-import uk.co.thinkofdeath.command.validators.Range;
-import uk.co.thinkofdeath.command.validators.Regex;
-import uk.co.thinkofdeath.command.validators.TypeHandler;
+import uk.co.thinkofdeath.command.validators.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unused")
 public class TestLimiter {
@@ -52,6 +45,7 @@ public class TestLimiter {
         CommandManager commandManager = new CommandManager();
         commandManager.register(new CommandHandler() {
             int call = 0;
+
             @Command("do ?")
             public void test(String sender, @Range(min = 0, max = 10) int val) {
                 assertEquals(0, call++);
@@ -95,12 +89,13 @@ public class TestLimiter {
         });
         commandManager.execute("hello", "test 0hello_world123_");
     }
-    
-    @Test()
+
+    @Test
     public void limitCustom() throws CommandException {
         CommandManager commandManager = new CommandManager();
         commandManager.register(new CommandHandler() {
             private int call = 0;
+
             @Command("testing ?")
             public void test(String sender, @NoK String test) {
                 assertEquals(sender, "bob");

@@ -26,7 +26,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
-
 import uk.co.thinkofdeath.command.CommandException;
 import uk.co.thinkofdeath.command.CommandLocaleHandler;
 import uk.co.thinkofdeath.command.CommandManager;

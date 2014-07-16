@@ -16,12 +16,7 @@
 
 package uk.co.thinkofdeath.command;
 
-import uk.co.thinkofdeath.command.parsers.ArgumentParser;
-import uk.co.thinkofdeath.command.parsers.DoubleParser;
-import uk.co.thinkofdeath.command.parsers.IntegerParser;
-import uk.co.thinkofdeath.command.parsers.ParserException;
-import uk.co.thinkofdeath.command.parsers.StringParser;
-import uk.co.thinkofdeath.command.parsers.UUIDParser;
+import uk.co.thinkofdeath.command.parsers.*;
 import uk.co.thinkofdeath.command.validators.ArgumentValidator;
 import uk.co.thinkofdeath.command.validators.TypeHandler;
 
@@ -421,7 +416,7 @@ public class CommandManager {
                             method.method.invoke(method.owner, processedArguments);
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             // Propagate errors
-                            if(e.getCause() != null && e.getCause() instanceof Error) {
+                            if (e.getCause() != null && e.getCause() instanceof Error) {
                                 throw (Error) e.getCause();
                             } else {
                                 throw new RuntimeException(e);

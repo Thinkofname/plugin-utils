@@ -34,6 +34,7 @@ import java.lang.annotation.Target;
  */
 public @interface Range {
     int min() default Integer.MIN_VALUE;
+
     int max() default Integer.MAX_VALUE;
 }
 
