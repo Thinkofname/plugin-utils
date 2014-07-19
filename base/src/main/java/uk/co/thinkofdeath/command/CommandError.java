@@ -20,15 +20,14 @@ package uk.co.thinkofdeath.command;
  * Contains the information required to display a
  * error message
  */
-public class CommandError {
+public class CommandError extends LocaleKey {
 
     private final int priority;
-    private final String key;
     private final Object[] args;
 
     public CommandError(int priority, String key, Object... args) {
+        super(key);
         this.priority = priority;
-        this.key = key;
         this.args = args;
     }
 
@@ -40,15 +39,6 @@ public class CommandError {
      */
     public int getPriority() {
         return priority;
-    }
-
-    /**
-     * The localization key for this error
-     *
-     * @return The key
-     */
-    public String getKey() {
-        return key;
     }
 
     /**
