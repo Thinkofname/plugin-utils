@@ -45,19 +45,10 @@ public class DefaultLocaleHandler implements CommandLocaleHandler {
     }
 
     @Override
-    public String getError(CommandError error) {
-        if (!strings.containsKey(error.getKey())) {
-            return error.getKey();
+    public String getLocalisedString(String key) {
+        if (!strings.containsKey(key)) {
+            return key;
         }
-        Object[] args = new Object[error.getArgumentCount()];
-        for (int i = 0; i < args.length; i++) {
-            Object arg = error.getArgument(i);
-            if (arg instanceof LocaleKey) {
-                args[i] = strings.get(((LocaleKey) arg).getKey());
-            } else {
-                args[i] = arg;
-            }
-        }
-        return String.format(strings.get(error.getKey()), args);
+        return strings.get(key);
     }
 }

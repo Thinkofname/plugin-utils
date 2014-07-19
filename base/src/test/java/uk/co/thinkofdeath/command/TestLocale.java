@@ -42,8 +42,8 @@ public class TestLocale {
             }
 
             @Override
-            public String getError(CommandError error) {
-                return error.getKey();
+            public String getLocalisedString(String key) {
+                return key;
             }
         });
         CommandManager cm2 = new CommandManager(new CommandLocaleHandler() {
@@ -53,8 +53,8 @@ public class TestLocale {
             }
 
             @Override
-            public String getError(CommandError error) {
-                return error.getKey();
+            public String getLocalisedString(String key) {
+                return key;
             }
         });
 

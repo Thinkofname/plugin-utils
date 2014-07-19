@@ -64,4 +64,18 @@ public class CommandError extends LocaleKey {
     public Object getArgument(int i) {
         return args[i];
     }
+
+    @Override
+    public String localise(CommandLocaleHandler localeHandler) {
+        Object[] args = new Object[this.args.length];
+        for (int i = 0; i < args.length; i++) {
+            Object arg = this.args[i];
+            if (arg instanceof LocaleKey) {
+                args[i] = ((LocaleKey) arg).localise(localeHandler);
+            } else {
+                args[i] = arg;
+            }
+        }
+        return String.format(super.localise(localeHandler), args);
+    }
 }

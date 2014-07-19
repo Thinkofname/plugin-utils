@@ -42,4 +42,12 @@ public class LocaleKey {
     public String getKey() {
         return key;
     }
+
+    /**
+     * Returns the localised version of this LocaleKey
+     * @return The localised version
+     */
+    public String localise(CommandLocaleHandler localeHandler) {
+        return localeHandler.getLocalisedString(key);
+    }
 }

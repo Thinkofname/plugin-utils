@@ -35,13 +35,12 @@ public interface CommandLocaleHandler {
     public String getCommand(String command);
 
     /**
-     * Returns the localised error message for the
-     * error
+     * Returns the localised message for the key
      *
-     * @param error
-     *         The error containing the information
-     *         needed to display the error
+     * @param key
+     *         The key to use to look-up the localised
+     *         version
      * @return The localised string
      */
-    public String getError(CommandError error);
+    public String getLocalisedString(String key);
 }
