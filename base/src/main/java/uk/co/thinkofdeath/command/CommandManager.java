@@ -115,6 +115,7 @@ import java.util.regex.Pattern;
  */
 public class CommandManager {
 
+    private static final Object NO_ARG = new Object();
     private final CommandLocaleHandler localeHandler;
     private final CommandNode rootNode = new CommandNode();
     private final HashMap<Class<?>, ArgumentParser> parsers = new HashMap<>();
@@ -369,17 +370,12 @@ public class CommandManager {
         String[] args = split(command);
         // Stores the states we can return to if the current route fails
         Stack<CommandState> toTry = new Stack<>();
-        // The base arguments for the method which will always be the
-        // caller
-        ArrayList<Object> baseArgs = new ArrayList<>();
-        baseArgs.add(caller);
-        toTry.add(new CommandState(rootNode, baseArgs, 0));
+        toTry.add(new CommandState(rootNode, caller, 0));
         // Try every possible route until we match a command or
         // run out of options
         while (!toTry.isEmpty()) {
             CommandState state = toTry.pop();
             CommandNode currentNode = state.node;
-            ArrayList<Object> arguments = state.arguments;
             int offset = state.offset;
             // We have enough arguments try executing the command
             if (offset == args.length) {
@@ -407,9 +403,20 @@ public class CommandManager {
                             }
                         }
 
+                        ArrayList<Object> arguments = new ArrayList<>();
+
+                        CommandState currentState = state;
+                        while (currentState != null) {
+                            if (currentState.argument != NO_ARG) {
+                                arguments.add(currentState.argument);
+                            }
+                            currentState = currentState.parent;
+                        }
+
+
                         Object[] processedArguments = new Object[arguments.size()];
                         for (int i = 0; i < processedArguments.length; i++) {
-                            processedArguments[method.argumentPositions[i]] = arguments.get(i);
+                            processedArguments[method.argumentPositions[i]] = arguments.get(arguments.size() - i - 1);
                         }
 
                         try {
@@ -459,15 +466,16 @@ public class CommandManager {
                         continue argTypes;
                     }
                 }
-                @SuppressWarnings("unchecked")
-                ArrayList<Object> newArgs = (ArrayList<Object>) arguments.clone();
-                newArgs.add(out);
-                toTry.add(new CommandState(argumentNode.node, newArgs, offset + 1));
+                CommandState newState = new CommandState(argumentNode.node, out, offset + 1);
+                newState.parent = state;
+                toTry.add(newState);
             }
             // Check sub-commands
             if (currentNode.subCommands.containsKey(argLower)) {
-                CommandNode newNode = currentNode.subCommands.get(argLower);
-                toTry.add(new CommandState(newNode, arguments, offset + 1));
+                CommandNode nextNode = currentNode.subCommands.get(argLower);
+                CommandState newState = new CommandState(nextNode, NO_ARG, offset + 1);
+                newState.parent = state;
+                toTry.add(newState);
             }
         }
         if (lastError == null || lastError.getPriority() < 1) {
@@ -599,12 +607,13 @@ public class CommandManager {
 
     private static class CommandState {
         private CommandNode node;
-        private ArrayList<Object> arguments;
+        private Object argument;
         private int offset;
+        private CommandState parent;
 
-        private CommandState(CommandNode node, ArrayList<Object> arguments, int offset) {
+        private CommandState(CommandNode node, Object argument, int offset) {
             this.node = node;
-            this.arguments = arguments;
+            this.argument = argument;
             this.offset = offset;
         }
     }
