@@ -29,14 +29,14 @@ import java.util.regex.Pattern;
  */
 public class UUIDParser implements ArgumentParser<UUID> {
 
-    private final Pattern mojangPattern = Pattern.compile("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{12})");
+    private final Pattern altPattern = Pattern.compile("([0-9a-fA-F]{8})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{4})([0-9a-fA-F]{12})");
 
     @Override
     public UUID parse(String argument) throws ParserException {
         try {
             return UUID.fromString(argument);
         } catch (IllegalArgumentException e) {
-            Matcher m = mojangPattern.matcher(argument);
+            Matcher m = altPattern.matcher(argument);
             if (!m.matches()) {
                 throw new ParserException(new CommandError(2, "parser.uuid.invalid", argument));
             }
