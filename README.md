@@ -19,9 +19,9 @@ Command Base
 
 A general command library
 
-Javadocs: http://ci.thinkofdeath.co.uk/job/command/ws/base/target/site/apidocs/index.html
+Javadocs: http://ci.thinkofdeath.co.uk/job/plugin-utils/ws/command-base/target/site/apidocs/index.html
 
-Usage examples: http://ci.thinkofdeath.co.uk/job/command/ws/base/target/site/apidocs/uk/co/thinkofdeath/command/CommandManager.html
+Usage examples: http://ci.thinkofdeath.co.uk/job/plugin-utils/ws/command-base/target/site/apidocs/uk/co/thinkofdeath/command/CommandManager.html
 
 Maven:
 ```
@@ -40,7 +40,7 @@ Command Bukkit
 A command library with bukkit specific features.
 Depends on command-base
 
-Javadocs: http://ci.thinkofdeath.co.uk/job/command/ws/bukkit/target/site/apidocs/index.html   
+Javadocs: http://ci.thinkofdeath.co.uk/job/plugin-utils/ws/command-bukkit/target/site/apidocs/index.html   
      
 Maven:
 ```
