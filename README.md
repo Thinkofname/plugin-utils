@@ -1,7 +1,7 @@
-command
+Plugin Utils
 =======
 
-A simple reflection based command system
+A collection of useful plugin libraries
 
 
 Maven repo: 
@@ -14,8 +14,10 @@ Maven repo:
 </repositories>
 ```
 
-Base
+Command Base
 ----
+
+A general command library
 
 Javadocs: http://ci.thinkofdeath.co.uk/job/command/ws/base/target/site/apidocs/index.html
 
@@ -32,8 +34,11 @@ Maven:
 </dependencies>
 ```
 
-Bukkit
+Command Bukkit
 ------
+
+A command library with bukkit specific features.
+Depends on command-base
 
 Javadocs: http://ci.thinkofdeath.co.uk/job/command/ws/bukkit/target/site/apidocs/index.html   
      
