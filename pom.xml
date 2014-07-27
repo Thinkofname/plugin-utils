@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>uk.co.thinkofdeath</groupId>
-    <artifactId>command</artifactId>
+    <artifactId>plugin-utils</artifactId>
     <packaging>pom</packaging>
     <version>0.2-SNAPSHOT</version>
     <modules>
-        <module>base</module>
-        <module>bukkit</module>
+        <module>command-base</module>
+        <module>command-bukkit</module>
     </modules>
 
     <properties>
