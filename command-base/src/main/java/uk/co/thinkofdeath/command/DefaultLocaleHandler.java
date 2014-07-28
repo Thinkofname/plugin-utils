@@ -16,6 +16,8 @@
 
 package uk.co.thinkofdeath.command;
 
+import uk.co.thinkofdeath.parsing.DefaultParserLocales;
+
 import java.util.HashMap;
 
 /**
@@ -26,17 +28,7 @@ public class DefaultLocaleHandler implements CommandLocaleHandler {
     protected HashMap<String, String> strings = new HashMap<>();
 
     {
-        strings.put("parser.integer.invalid", "'%s' is not an integer");
-        strings.put("parser.double.invalid", "'%s' is not a real number");
-        strings.put("parser.enum.invalid", "'%s' is not a valid value");
-        strings.put("parser.uuid.invalid", "'%s' is not a valid UUID");
-        strings.put("command.unknown", "Unknown command");
-        strings.put("command.incorrect.caller", "You cannot call this command");
-        strings.put("validator.maxlength", "'%s' is longer than the max %s");
-        strings.put("validator.range.min", "'%d' must be greater or equal to '%d'");
-        strings.put("validator.range.max", "'%d' must be lesser or equal to '%d'");
-        strings.put("validator.regex", "'%s' is not %s");
-        strings.put("regex.valid", "valid input");
+        DefaultParserLocales.insert(strings);
     }
 
     @Override
