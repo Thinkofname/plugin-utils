@@ -16,6 +16,9 @@
 
 package uk.co.thinkofdeath.command;
 
+import uk.co.thinkfdeath.common.locale.LocaleHandler;
+import uk.co.thinkfdeath.common.locale.LocaleKey;
+
 /**
  * Contains the information required to display a
  * error message
@@ -66,7 +69,7 @@ public class CommandError extends LocaleKey {
     }
 
     @Override
-    public String localise(CommandLocaleHandler localeHandler) {
+    public String localise(LocaleHandler localeHandler) {
         Object[] args = new Object[this.args.length];
         for (int i = 0; i < args.length; i++) {
             Object arg = this.args[i];
