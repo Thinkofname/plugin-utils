@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.bukkit;
+package uk.co.thinkfdeath.parsing.bukkit.parsing;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffectType;
 import uk.co.thinkofdeath.parsing.ParserException;
 import uk.co.thinkofdeath.parsing.parsers.ArgumentParser;
 
@@ -30,25 +30,25 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Parses an enchantment name into an enchantment object. This
+ * Parses an enchantment name into an potiontype object. This
  * class supplies mappings by default, but can be given custom mappings.
  * The keys in the map MUST be completely lowercase, otherwise behavior
  * is undefined.
  */
-public class EnchantmentParser implements ArgumentParser<Enchantment> {
+public class PotionParser implements ArgumentParser<PotionEffectType> {
     private final Plugin plugin;
 
-    private final Map<String, Enchantment> map;
-    private static final Map<String, Enchantment> DEFAULT;
+    private final Map<String, PotionEffectType> map;
+    private static final Map<String, PotionEffectType> DEFAULT;
 
     static {
-        ImmutableMap.Builder<String, Enchantment> map = new ImmutableMap.Builder<>();
-        for (Field f : Enchantment.class.getFields()) {
-            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && Enchantment.class.isAssignableFrom(f.getType())) {
+        ImmutableMap.Builder<String, PotionEffectType> map = new ImmutableMap.Builder<>();
+        for (Field f : PotionEffectType.class.getFields()) {
+            if (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers()) && PotionEffectType.class.isAssignableFrom(f.getType())) {
                 try {
-                    map.put(f.getName().toLowerCase(), (Enchantment) f.get(null));
+                    map.put(f.getName().toLowerCase(), (PotionEffectType) f.get(null));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    Bukkit.getLogger().severe("Exception building default map for " + EnchantmentParser.class.getName() + " at element " + f.getName());
+                    Bukkit.getLogger().severe("Exception building default map for " + PotionParser.class.getName() + " at element " + f.getName());
                     e.printStackTrace();
                 }
             }
@@ -56,22 +56,22 @@ public class EnchantmentParser implements ArgumentParser<Enchantment> {
         DEFAULT = map.build();
     }
 
-    public EnchantmentParser(Plugin plugin, Map<String, Enchantment> mappings) {
+    public PotionParser(Plugin plugin, Map<String, PotionEffectType> mappings) {
         this.plugin = plugin;
         this.map = mappings;
     }
 
-    public EnchantmentParser(Plugin plugin) {
+    public PotionParser(Plugin plugin) {
         this(plugin, DEFAULT);
     }
 
     @Override
-    public Enchantment parse(String argument) throws ParserException {
-        Enchantment enchantment = map.get(argument.toLowerCase());
-        if (enchantment == null) {
-            throw new ParserException(2, "bukkit.no-enchantment", argument);
+    public PotionEffectType parse(String argument) throws ParserException {
+        PotionEffectType potion = map.get(argument.toLowerCase());
+        if (potion == null) {
+            throw new ParserException(2, "bukkit.no-potion", argument);
         }
-        return enchantment;
+        return potion;
     }
 
     @Override

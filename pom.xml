@@ -14,6 +14,7 @@
         <module>config-base</module>
         <module>parser-base</module>
         <module>common</module>
+        <module>parser-bukkit</module>
     </modules>
 
     <properties>

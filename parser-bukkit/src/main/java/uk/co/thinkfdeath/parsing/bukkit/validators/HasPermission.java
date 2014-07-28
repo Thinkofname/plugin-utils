@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.bukkit;
+package uk.co.thinkfdeath.parsing.bukkit.validators;
 
 import org.bukkit.command.CommandSender;
-import uk.co.thinkofdeath.command.CommandError;
 import uk.co.thinkofdeath.parsing.ParserException;
 import uk.co.thinkofdeath.parsing.validators.ArgumentValidator;
 import uk.co.thinkofdeath.parsing.validators.TypeHandler;

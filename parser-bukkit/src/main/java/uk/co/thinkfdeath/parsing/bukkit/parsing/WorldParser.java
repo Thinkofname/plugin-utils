@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.bukkit;
+package uk.co.thinkfdeath.parsing.bukkit.parsing;
 
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;

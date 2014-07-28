@@ -27,6 +27,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>uk.co.thinkofdeath</groupId>
+            <artifactId>parser-bukkit</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.7.10-R0.1-SNAPSHOT</version>
