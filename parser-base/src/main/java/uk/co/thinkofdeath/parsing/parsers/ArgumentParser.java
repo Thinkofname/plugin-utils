@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.parsers;
+package uk.co.thinkofdeath.parsing.parsers;
+
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.util.Set;
 
@@ -22,7 +24,7 @@ import java.util.Set;
  * An argument parser takes a argument passed into a
  * command returns object/type is represents. If the
  * argument cannot be parsed by the parser then this
- * should throw an {@link uk.co.thinkofdeath.command.parsers.ParserException}
+ * should throw an {@link uk.co.thinkofdeath.parsing.ParserException}
  * with the message set to the reason that should be
  * passed to the executor
  */
@@ -35,7 +37,7 @@ public interface ArgumentParser<T> {
      * @param argument
      *         The argument to parse
      * @return The result of parsing
-     * @throws ParserException
+     * @throws uk.co.thinkofdeath.parsing.ParserException
      *         If the parser is unable to
      *         parse the argument
      */

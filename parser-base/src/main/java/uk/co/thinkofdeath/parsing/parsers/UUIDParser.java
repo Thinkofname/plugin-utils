@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.parsers;
+package uk.co.thinkofdeath.parsing.parsers;
 
-import uk.co.thinkofdeath.command.CommandError;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +38,7 @@ public class UUIDParser implements ArgumentParser<UUID> {
         } catch (IllegalArgumentException e) {
             Matcher m = altPattern.matcher(argument);
             if (!m.matches()) {
-                throw new ParserException(new CommandError(2, "parser.uuid.invalid", argument));
+                throw new ParserException(2, "parser.uuid.invalid", argument);
             }
             String reformatted = String.format("%s-%s-%s-%s-%s", m.group(1), m.group(2), m.group(3), m.group(4), m.group(5));
             return parse(reformatted);

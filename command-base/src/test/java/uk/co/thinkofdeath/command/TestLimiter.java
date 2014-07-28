@@ -17,7 +17,8 @@
 package uk.co.thinkofdeath.command;
 
 import org.junit.Test;
-import uk.co.thinkofdeath.command.validators.*;
+import uk.co.thinkofdeath.parsing.ParserException;
+import uk.co.thinkofdeath.parsing.validators.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -132,11 +133,10 @@ public class TestLimiter {
             }
 
             @Override
-            public CommandError validate(String argString, String argument) {
+            public void validate(String argString, String argument) throws ParserException{
                 if (argument.toLowerCase().contains("k")) {
-                    return new CommandError(3, "No K's allowed");
+                    throw new ParserException(3, "No K's allowed");
                 }
-                return null;
             }
         }
     }

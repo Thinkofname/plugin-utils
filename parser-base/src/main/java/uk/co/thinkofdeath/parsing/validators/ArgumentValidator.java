@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.validators;
+package uk.co.thinkofdeath.parsing.validators;
 
-import uk.co.thinkofdeath.command.CommandError;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 /**
  * An argument validator is used to apply limits to
  * specific argument of a command. This must be used
- * in-conjunction with a {@link uk.co.thinkofdeath.command.validators.TypeHandler}
+ * in-conjunction with a {@link uk.co.thinkofdeath.parsing.validators.TypeHandler}
  * annotation that points to this class.
  *
  * As well as having the validate method and implementing
@@ -40,8 +40,6 @@ public interface ArgumentValidator<T> {
      * @param argument
      *         The argument to be validated, should
      *         be of the type declared in the type handler
-     * @return null if it validates fine otherwise the
-     * error to be displayed
      */
-    CommandError validate(String argString, T argument);
+    void validate(String argString, T argument) throws ParserException;
 }

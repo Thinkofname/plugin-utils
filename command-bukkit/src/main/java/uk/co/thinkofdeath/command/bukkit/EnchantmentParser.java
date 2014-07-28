@@ -20,9 +20,8 @@ import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
-import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.parsers.ArgumentParser;
-import uk.co.thinkofdeath.command.parsers.ParserException;
+import uk.co.thinkofdeath.parsing.ParserException;
+import uk.co.thinkofdeath.parsing.parsers.ArgumentParser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -70,7 +69,7 @@ public class EnchantmentParser implements ArgumentParser<Enchantment> {
     public Enchantment parse(String argument) throws ParserException {
         Enchantment enchantment = map.get(argument.toLowerCase());
         if (enchantment == null) {
-            throw new ParserException(new CommandError(2, "bukkit.no-enchantment", argument));
+            throw new ParserException(2, "bukkit.no-enchantment", argument);
         }
         return enchantment;
     }

@@ -11,6 +11,9 @@
     <modules>
         <module>command-base</module>
         <module>command-bukkit</module>
+        <module>config-base</module>
+        <module>parser-base</module>
+        <module>common</module>
     </modules>
 
     <properties>

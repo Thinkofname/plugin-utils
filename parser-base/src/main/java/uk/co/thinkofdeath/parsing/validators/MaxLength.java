@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.validators;
+package uk.co.thinkofdeath.parsing.validators;
 
-import uk.co.thinkofdeath.command.CommandError;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,39 +24,31 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @TypeHandler(
-        value = RangeHandler.class,
-        clazz = int.class
+        value = MaxLengthHandler.class,
+        clazz = String.class
 )
 @Target({ElementType.PARAMETER, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 /**
- * Requires the integer to be between min and max
+ * Requires the passed string to have a length less than
+ * or equal to the value
  */
-public @interface Range {
-    int min() default Integer.MIN_VALUE;
-
-    int max() default Integer.MAX_VALUE;
+public @interface MaxLength {
+    int value();
 }
 
-class RangeHandler implements ArgumentValidator<Integer> {
+class MaxLengthHandler implements ArgumentValidator<String> {
 
-    private final int min;
     private final int max;
 
-    RangeHandler(Range range) {
-        min = range.min();
-        max = range.max();
+    MaxLengthHandler(MaxLength maxLength) {
+        max = maxLength.value();
     }
 
     @Override
-    public CommandError validate(String argStr, Integer argument) {
-        if (argument < min) {
-            return new CommandError(3, "validator.range.min", argument, min);
+    public void validate(String argStr, String argument) throws ParserException {
+        if (argument.length() > max) {
+            throw new ParserException(3, "validator.maxlength", argument, max);
         }
-        if (argument > max) {
-            return new CommandError(3, "validator.range.max'", argument, max);
-        }
-        return null;
     }
 }
-

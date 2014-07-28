@@ -19,8 +19,8 @@ package uk.co.thinkofdeath.command.bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.parsers.ArgumentParser;
-import uk.co.thinkofdeath.command.parsers.ParserException;
+import uk.co.thinkofdeath.parsing.parsers.ArgumentParser;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +41,7 @@ public class PlayerParser implements ArgumentParser<Player> {
     public Player parse(String argument) throws ParserException {
         Player player = plugin.getServer().getPlayer(argument);
         if (player == null) {
-            throw new ParserException(new CommandError(2, "bukkit.no-player", argument));
+            throw new ParserException(2, "bukkit.no-player", argument);
         }
         return player;
     }

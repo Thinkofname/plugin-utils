@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.validators;
+package uk.co.thinkofdeath.parsing.validators;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

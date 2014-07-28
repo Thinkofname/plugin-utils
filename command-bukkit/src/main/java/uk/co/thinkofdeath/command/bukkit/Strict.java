@@ -17,9 +17,9 @@
 package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.entity.Player;
-import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.validators.ArgumentValidator;
-import uk.co.thinkofdeath.command.validators.TypeHandler;
+import uk.co.thinkofdeath.parsing.ParserException;
+import uk.co.thinkofdeath.parsing.validators.ArgumentValidator;
+import uk.co.thinkofdeath.parsing.validators.TypeHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -46,11 +46,11 @@ class StrictHandler implements ArgumentValidator<Player> {
     }
 
     @Override
-    public CommandError validate(String argStr, Player argument) {
-        if (argStr == null) return null;
+    public void validate(String argStr, Player argument) throws ParserException {
+        if (argStr == null) return;
         if (argument.getName().equalsIgnoreCase(argStr)) {
-            return null;
+            return;
         }
-        return new CommandError(3, "bukkit.no-player", argStr);
+        throw new ParserException(3, "bukkit.no-player", argStr);
     }
 }

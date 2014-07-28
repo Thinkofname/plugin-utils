@@ -29,7 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 import uk.co.thinkofdeath.command.CommandException;
 import uk.co.thinkofdeath.command.CommandLocaleHandler;
 import uk.co.thinkofdeath.command.CommandManager;
-import uk.co.thinkofdeath.command.parsers.EnumParser;
+import uk.co.thinkofdeath.parsing.parsers.EnumParser;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class BukkitCommandManager extends CommandManager implements TabExecutor 
      * <ul>
      * <li>{@link org.bukkit.World} with {@link uk.co.thinkofdeath.command.bukkit.WorldParser}</li>
      * <li>{@link org.bukkit.entity.Player} with {@link uk.co.thinkofdeath.command.bukkit.PlayerParser}</li>
-     * <li>{@link org.bukkit.Material} with {@link uk.co.thinkofdeath.command.parsers.EnumParser}</li>
+     * <li>{@link org.bukkit.Material} with {@link uk.co.thinkofdeath.parsing.parsers.EnumParser}</li>
      * </ul>
      *
      * @param plugin
@@ -69,7 +69,7 @@ public class BukkitCommandManager extends CommandManager implements TabExecutor 
      * <ul>
      * <li>{@link org.bukkit.World} with {@link uk.co.thinkofdeath.command.bukkit.WorldParser}</li>
      * <li>{@link org.bukkit.entity.Player} with {@link uk.co.thinkofdeath.command.bukkit.PlayerParser}</li>
-     * <li>{@link org.bukkit.Material} with {@link uk.co.thinkofdeath.command.parsers.EnumParser}</li>
+     * <li>{@link org.bukkit.Material} with {@link uk.co.thinkofdeath.parsing.parsers.EnumParser}</li>
      * </ul>
      *
      * <p>

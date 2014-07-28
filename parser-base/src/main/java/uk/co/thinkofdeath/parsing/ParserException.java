@@ -14,40 +14,32 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command;
+package uk.co.thinkofdeath.parsing;
 
 /**
- * For use in CommandError to provide localised arguments
+ * Thrown if a parser is unable to parse the argument
  */
-public class LocaleKey {
+public class ParserException extends Exception {
 
+    private final int priority;
     private final String key;
+    private final Object[] args;
 
-    /**
-     * Creates a LocaleKey with the key set
-     * to the passed argument
-     *
-     * @param key
-     *         The locale key
-     */
-    public LocaleKey(String key) {
+    public ParserException(int priority, String key, Object... args) {
+        this.priority = priority;
         this.key = key;
+        this.args = args;
     }
 
-    /**
-     * Returns the key that this LocaleKey points to
-     *
-     * @return The locale key
-     */
+    public int getPriority() {
+        return priority;
+    }
+
     public String getKey() {
         return key;
     }
 
-    /**
-     * Returns the localised version of this LocaleKey
-     * @return The localised version
-     */
-    public String localise(CommandLocaleHandler localeHandler) {
-        return localeHandler.getLocalisedString(key);
+    public Object[] getArguments() {
+        return args;
     }
 }

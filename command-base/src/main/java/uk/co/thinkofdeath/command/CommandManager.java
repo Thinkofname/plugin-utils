@@ -16,9 +16,10 @@
 
 package uk.co.thinkofdeath.command;
 
-import uk.co.thinkofdeath.command.parsers.*;
-import uk.co.thinkofdeath.command.validators.ArgumentValidator;
-import uk.co.thinkofdeath.command.validators.TypeHandler;
+import uk.co.thinkofdeath.parsing.ParserException;
+import uk.co.thinkofdeath.parsing.parsers.*;
+import uk.co.thinkofdeath.parsing.validators.ArgumentValidator;
+import uk.co.thinkofdeath.parsing.validators.TypeHandler;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -81,7 +82,7 @@ import java.util.regex.Pattern;
  * </code></pre>
  *
  * Argument validator annotations can be used to place limits on
- * certain arguments. {@link uk.co.thinkofdeath.command.validators.MaxLength}
+ * certain arguments. {@link uk.co.thinkofdeath.parsing.validators.MaxLength}
  * for example applies to String arguments and will check if
  * the provided argument is smaller or equal to its argument and
  * if its not the command will fail. This can also be used to
@@ -204,7 +205,7 @@ public class CommandManager {
      * Additional annotations may be added to the parameters
      * to impose limits on them. The annotation must have
      * a type handler annotation on them for the executor
-     * use them. For example {@link uk.co.thinkofdeath.command.validators.MaxLength}
+     * use them. For example {@link uk.co.thinkofdeath.parsing.validators.MaxLength}
      *
      * @param commandHandler
      *         The command handler to be added
@@ -393,11 +394,11 @@ public class CommandManager {
                     if (type.isAssignableFrom(caller.getClass())) {
 
                         for (ArgumentValidator t : method.argumentValidators) {
-                            @SuppressWarnings("unchecked")
-                            CommandError error = t.validate(null, caller);
-                            if (error != null) {
-                                if (lastError == null || lastError.getPriority() < error.getPriority()) {
-                                    lastError = error;
+                            try {
+                                t.validate(null, caller);
+                            } catch (ParserException e) {
+                                if (lastError == null || lastError.getPriority() < e.getPriority()) {
+                                    lastError = new CommandError(e.getPriority(), e.getKey(), e.getArguments());
                                 }
                                 continue callCheck;
                             }
@@ -448,8 +449,8 @@ public class CommandManager {
                 try {
                     out = argumentNode.parser.parse(arg);
                 } catch (ParserException e) {
-                    if (lastError == null || lastError.getPriority() < e.getError().getPriority()) {
-                        lastError = e.getError();
+                    if (lastError == null || lastError.getPriority() < e.getPriority()) {
+                        lastError = new CommandError(e.getPriority(), e.getKey(), e.getArguments());
                     }
                     continue;
                 }
@@ -457,11 +458,11 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
-                    @SuppressWarnings("unchecked")
-                    CommandError error = type.validate(arg, out);
-                    if (error != null) {
-                        if (lastError == null || lastError.getPriority() < error.getPriority()) {
-                            lastError = error;
+                    try {
+                        type.validate(arg, out);
+                    } catch (ParserException e) {
+                        if (lastError == null || lastError.getPriority() < e.getPriority()) {
+                            lastError = new CommandError(e.getPriority(), e.getKey(), e.getArguments());
                         }
                         continue argTypes;
                     }
@@ -550,9 +551,9 @@ public class CommandManager {
                     continue;
                 }
                 for (ArgumentValidator type : argumentNode.type) {
-                    @SuppressWarnings("unchecked")
-                    CommandError error = type.validate(arg, out);
-                    if (error != null) {
+                    try {
+                        type.validate(arg, out);
+                    } catch (ParserException e) {
                         continue argTypes;
                     }
                 }

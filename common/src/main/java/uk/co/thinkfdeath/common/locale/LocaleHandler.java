@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.parsers;
+package uk.co.thinkfdeath.common.locale;
 
-import uk.co.thinkofdeath.command.CommandError;
+public interface LocaleHandler {
 
-/**
- * Thrown if a parser is unable to parse the argument
- */
-public class ParserException extends Exception {
-    private final CommandError error;
-
-    public ParserException(CommandError error) {
-        this.error = error;
-    }
-
-    public CommandError getError() {
-        return error;
-    }
+    /**
+     * Returns the localised message for the key
+     *
+     * @param key
+     *         The key to use to look-up the localised
+     *         version
+     * @return The localised string
+     */
+    public String getLocalisedString(String key);
 }

@@ -16,8 +16,8 @@
 
 package uk.co.thinkofdeath.command;
 
-import uk.co.thinkofdeath.command.parsers.ArgumentParser;
-import uk.co.thinkofdeath.command.validators.ArgumentValidator;
+import uk.co.thinkofdeath.parsing.parsers.ArgumentParser;
+import uk.co.thinkofdeath.parsing.validators.ArgumentValidator;
 
 import java.util.Arrays;
 

@@ -11,4 +11,17 @@
 
     <artifactId>command-base</artifactId>
     <version>0.2-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>uk.co.thinkofdeath</groupId>
+            <artifactId>parser-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>uk.co.thinkofdeath</groupId>
+            <artifactId>common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -16,10 +16,12 @@
 
 package uk.co.thinkofdeath.command;
 
+import uk.co.thinkfdeath.common.locale.LocaleHandler;
+
 /**
  * Used to handle localizing of commands and errors
  */
-public interface CommandLocaleHandler {
+public interface CommandLocaleHandler extends LocaleHandler {
 
     /**
      * This is passed the command so that the handler
@@ -33,14 +35,4 @@ public interface CommandLocaleHandler {
      * @return The new command syntax to use
      */
     public String getCommand(String command);
-
-    /**
-     * Returns the localised message for the key
-     *
-     * @param key
-     *         The key to use to look-up the localised
-     *         version
-     * @return The localised string
-     */
-    public String getLocalisedString(String key);
 }

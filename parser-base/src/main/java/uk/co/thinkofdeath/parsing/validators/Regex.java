@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.validators;
+package uk.co.thinkofdeath.parsing.validators;
 
-import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.LocaleKey;
+import uk.co.thinkfdeath.common.locale.LocaleKey;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -51,11 +51,9 @@ class RegexHandler implements ArgumentValidator<String> {
     }
 
     @Override
-    public CommandError validate(String argStr, String argument) {
-        if (regex.matcher(argument).matches()) {
-            return null;
-        } else {
-            return new CommandError(3, "validator.regex", argument, regex, fail);
+    public void validate(String argStr, String argument) throws ParserException {
+        if (!regex.matcher(argument).matches()) {
+            throw new ParserException(3, "validator.regex", argument, regex, fail);
         }
     }
 }

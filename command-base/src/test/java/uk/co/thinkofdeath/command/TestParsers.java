@@ -17,9 +17,9 @@
 package uk.co.thinkofdeath.command;
 
 import org.junit.Test;
-import uk.co.thinkofdeath.command.parsers.ArgumentParser;
-import uk.co.thinkofdeath.command.parsers.EnumParser;
-import uk.co.thinkofdeath.command.parsers.ParserException;
+import uk.co.thinkofdeath.parsing.parsers.ArgumentParser;
+import uk.co.thinkofdeath.parsing.parsers.EnumParser;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.util.*;
 
@@ -297,7 +297,7 @@ public class TestParsers {
                     try {
                         out[i] = Integer.parseInt(args[i]);
                     } catch (NumberFormatException e) {
-                        throw new ParserException(new CommandError(2, e.getMessage()));
+                        throw new ParserException(2, e.getMessage());
                     }
                 }
                 return out;

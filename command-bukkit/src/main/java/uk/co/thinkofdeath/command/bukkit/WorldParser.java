@@ -18,9 +18,8 @@ package uk.co.thinkofdeath.command.bukkit;
 
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
-import uk.co.thinkofdeath.command.CommandError;
-import uk.co.thinkofdeath.command.parsers.ArgumentParser;
-import uk.co.thinkofdeath.command.parsers.ParserException;
+import uk.co.thinkofdeath.parsing.ParserException;
+import uk.co.thinkofdeath.parsing.parsers.ArgumentParser;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +38,7 @@ public class WorldParser implements ArgumentParser<World> {
     public World parse(String argument) throws ParserException {
         World world = plugin.getServer().getWorld(argument);
         if (world == null) {
-            throw new ParserException(new CommandError(2, "bukkit.no-world", argument));
+            throw new ParserException(2, "bukkit.no-world", argument);
         }
         return world;
     }

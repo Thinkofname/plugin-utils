@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.parsers;
+package uk.co.thinkofdeath.parsing.parsers;
 
-import uk.co.thinkofdeath.command.CommandError;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,7 +81,7 @@ public class EnumParser<T extends Enum<T>> implements ArgumentParser<T> {
                 }
             }
         }
-        throw new ParserException(new CommandError(2, "parser.enum.invalid", argument));
+        throw new ParserException(2, "parser.enum.invalid", argument);
     }
 
     @Override

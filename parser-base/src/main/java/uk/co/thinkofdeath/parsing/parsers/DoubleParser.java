@@ -14,23 +14,30 @@
  * limitations under the License.
  */
 
-package uk.co.thinkofdeath.command.parsers;
+package uk.co.thinkofdeath.parsing.parsers;
 
-import uk.co.thinkofdeath.command.CommandError;
+import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Allows for any valid integer
+ * Allows for any valid double, except NaN and infinities
  */
-public class IntegerParser implements ArgumentParser<Integer> {
+public class DoubleParser implements ArgumentParser<Double> {
     @Override
-    public Integer parse(String argument) throws ParserException {
+    public Double parse(String argument) throws ParserException {
         try {
-            return Integer.valueOf(argument);
+            double v = Double.valueOf(argument);
+
+            // most command won't expect to handle special values
+            if (Double.isNaN(v) || Double.isInfinite(v)) {
+                throw new NumberFormatException();
+            }
+
+            return v;
         } catch (NumberFormatException e) {
-            throw new ParserException(new CommandError(2, "parser.integer.invalid", argument));
+            throw new ParserException(2, "parser.double.invalid", argument);
         }
     }
 
