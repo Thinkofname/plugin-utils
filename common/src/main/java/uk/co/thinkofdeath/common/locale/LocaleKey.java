@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkfdeath.common.locale;
+package uk.co.thinkofdeath.common.locale;
 
 /**
  * For use in CommandError to provide localised arguments

@@ -16,7 +16,7 @@
 
 package uk.co.thinkofdeath.command.bukkit;
 
-import uk.co.thinkfdeath.parsing.bukkit.DefaultBukkitParserLocales;
+import uk.co.thinkofdeath.parsing.bukkit.DefaultBukkitParserLocales;
 import uk.co.thinkofdeath.command.DefaultLocaleHandler;
 
 public class DefaultBukkitLocaleHandler extends DefaultLocaleHandler {

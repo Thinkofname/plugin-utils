@@ -26,10 +26,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffectType;
-import uk.co.thinkfdeath.parsing.bukkit.parsing.EnchantmentParser;
-import uk.co.thinkfdeath.parsing.bukkit.parsing.PlayerParser;
-import uk.co.thinkfdeath.parsing.bukkit.parsing.PotionParser;
-import uk.co.thinkfdeath.parsing.bukkit.parsing.WorldParser;
+import uk.co.thinkofdeath.parsing.bukkit.parsing.EnchantmentParser;
+import uk.co.thinkofdeath.parsing.bukkit.parsing.PlayerParser;
+import uk.co.thinkofdeath.parsing.bukkit.parsing.PotionParser;
+import uk.co.thinkofdeath.parsing.bukkit.parsing.WorldParser;
 import uk.co.thinkofdeath.command.CommandException;
 import uk.co.thinkofdeath.command.CommandLocaleHandler;
 import uk.co.thinkofdeath.command.CommandManager;
@@ -54,8 +54,8 @@ public class BukkitCommandManager extends CommandManager implements TabExecutor 
      * Creates a CommandManager initialised with parsers
      * from the CommandManager as well as:
      * <ul>
-     * <li>{@link org.bukkit.World} with {@link uk.co.thinkfdeath.parsing.bukkit.parsing.WorldParser}</li>
-     * <li>{@link org.bukkit.entity.Player} with {@link uk.co.thinkfdeath.parsing.bukkit.parsing.PlayerParser}</li>
+     * <li>{@link org.bukkit.World} with {@link uk.co.thinkofdeath.parsing.bukkit.parsing.WorldParser}</li>
+     * <li>{@link org.bukkit.entity.Player} with {@link uk.co.thinkofdeath.parsing.bukkit.parsing.PlayerParser}</li>
      * <li>{@link org.bukkit.Material} with {@link uk.co.thinkofdeath.parsing.parsers.EnumParser}</li>
      * </ul>
      *
@@ -71,8 +71,8 @@ public class BukkitCommandManager extends CommandManager implements TabExecutor 
      * Creates a CommandManager initialised with parsers
      * from the CommandManager as well as:
      * <ul>
-     * <li>{@link org.bukkit.World} with {@link uk.co.thinkfdeath.parsing.bukkit.parsing.WorldParser}</li>
-     * <li>{@link org.bukkit.entity.Player} with {@link uk.co.thinkfdeath.parsing.bukkit.parsing.PlayerParser}</li>
+     * <li>{@link org.bukkit.World} with {@link uk.co.thinkofdeath.parsing.bukkit.parsing.WorldParser}</li>
+     * <li>{@link org.bukkit.entity.Player} with {@link uk.co.thinkofdeath.parsing.bukkit.parsing.PlayerParser}</li>
      * <li>{@link org.bukkit.Material} with {@link uk.co.thinkofdeath.parsing.parsers.EnumParser}</li>
      * </ul>
      *

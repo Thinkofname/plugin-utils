@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkfdeath.parsing.bukkit.parsing;
+package uk.co.thinkofdeath.parsing.bukkit.parsing;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * Parses player name's into Player objects. By default
  * this parsing doesn't require an exact match to work.
- * This may be changed by using {@link uk.co.thinkfdeath.parsing.bukkit.validators.Strict}
+ * This may be changed by using {@link uk.co.thinkofdeath.parsing.bukkit.validators.Strict}
  */
 public class PlayerParser implements ArgumentParser<Player> {
     private final Plugin plugin;

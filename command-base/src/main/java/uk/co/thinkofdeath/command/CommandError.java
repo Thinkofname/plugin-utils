@@ -16,8 +16,8 @@
 
 package uk.co.thinkofdeath.command;
 
-import uk.co.thinkfdeath.common.locale.LocaleHandler;
-import uk.co.thinkfdeath.common.locale.LocaleKey;
+import uk.co.thinkofdeath.common.locale.LocaleHandler;
+import uk.co.thinkofdeath.common.locale.LocaleKey;
 
 /**
  * Contains the information required to display a

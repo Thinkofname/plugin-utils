@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkfdeath.parsing.bukkit.parsing;
+package uk.co.thinkofdeath.parsing.bukkit.parsing;
 
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.Bukkit;

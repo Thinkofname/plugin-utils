@@ -16,7 +16,7 @@
 
 package uk.co.thinkofdeath.parsing.validators;
 
-import uk.co.thinkfdeath.common.locale.LocaleKey;
+import uk.co.thinkofdeath.common.locale.LocaleKey;
 import uk.co.thinkofdeath.parsing.ParserException;
 
 import java.lang.annotation.ElementType;

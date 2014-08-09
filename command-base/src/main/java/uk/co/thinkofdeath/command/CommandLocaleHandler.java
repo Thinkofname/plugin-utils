@@ -16,7 +16,7 @@
 
 package uk.co.thinkofdeath.command;
 
-import uk.co.thinkfdeath.common.locale.LocaleHandler;
+import uk.co.thinkofdeath.common.locale.LocaleHandler;
 
 /**
  * Used to handle localizing of commands and errors

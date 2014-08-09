@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.co.thinkfdeath.parsing.bukkit.validators;
+package uk.co.thinkofdeath.parsing.bukkit.validators;
 
 import org.bukkit.entity.Player;
 import uk.co.thinkofdeath.parsing.ParserException;

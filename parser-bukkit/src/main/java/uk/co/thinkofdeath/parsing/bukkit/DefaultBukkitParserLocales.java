@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.co.thinkfdeath.common.locale;
+package uk.co.thinkofdeath.parsing.bukkit;
 
-public interface LocaleHandler {
+import java.util.Map;
 
-    /**
-     * Returns the localised message for the key
-     *
-     * @param key
-     *         The key to use to look-up the localised
-     *         version
-     * @return The localised string
-     */
-    public String getLocalisedString(String key);
+public class DefaultBukkitParserLocales {
+
+    public static void insert(Map<String, String> strings) {
+        strings.put("bukkit.no-permission", "You do not have the permission to do this");
+        strings.put("bukkit.no-player", "Could not find player '%s'");
+        strings.put("bukkit.no-world", "Could not find world '%s'");
+        strings.put("bukkit.no-enchantment", "Could not find enchantment '%s'");
+        strings.put("bukkit.no-potion", "Could not find potion type '%s'");
+    }
 }
