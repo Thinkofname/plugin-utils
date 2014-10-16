@@ -22,6 +22,7 @@ import uk.co.thinkofdeath.parsing.validators.ArgumentValidator;
 import uk.co.thinkofdeath.parsing.validators.TypeHandler;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -240,7 +241,8 @@ public class CommandManager {
             // its end where it places the method to be
             // called later
             CommandNode currentNode = rootNode;
-            for (String arg : args) {
+            for (int i = 0; i < args.length; i++) {
+                String arg = args[i];
                 if (arg.startsWith("?")) { // Dynamic argument
                     int index;
                     if (arg.equals("?")) {
@@ -255,6 +257,21 @@ public class CommandManager {
                         throw new CommandRegisterException("Incorrect number of method parameters");
                     }
                     Class<?> argType = methodArgs[index];
+
+                    boolean varargs;
+                    if (method.isVarArgs() && methodArgs.length == index + 1) {
+                        for (int j = i + 1; j < args.length; j++) {
+                            if (!args[j].isEmpty()) {
+                                throw new CommandRegisterException("Varargs needs to be last argument!");
+                            }
+                        }
+                        assert argType.isArray(); // otherwise varargs wouldn't really make sense
+                        argType = argType.getComponentType();
+                        varargs = true;
+                    } else {
+                        varargs = false;
+                    }
+
                     ArgumentParser parser = parsers.get(argType);
                     if (parser == null) {
                         throw new CommandRegisterException("No parser for " + argType.getSimpleName());
@@ -263,7 +280,8 @@ public class CommandManager {
                     // instances of them using the annotation as the arguments
                     Annotation[] annotations = methodArgAnnotations[index];
                     ArgumentValidator[] argCheckers = processCommandAnnotations(argType, annotations);
-                    ArgumentNode argumentNode = new ArgumentNode(parser, argCheckers);
+
+                    ArgumentNode argumentNode = new ArgumentNode(parser, argCheckers, varargs ? argType : null);
                     currentNode.arguments.add(argumentNode);
                     // Branch into the node
                     currentNode = argumentNode.node;
@@ -446,20 +464,41 @@ public class CommandManager {
             argTypes:
             for (ArgumentNode argumentNode : currentNode.arguments) {
                 Object out;
+                Object[] outArray;
                 try {
-                    out = argumentNode.parser.parse(arg);
+                    if (argumentNode.varargsType != null) {
+                        out = Array.newInstance(argumentNode.varargsType, args.length - offset);
+                        outArray = (Object[]) out;
+                        for (int i = offset; i < args.length; i++) {
+                            Object parsed = argumentNode.parser.parse(args[i]);
+                            if (parsed == null) { // parser error?
+                                continue argTypes;
+                            }
+                            outArray[i - offset] = parsed;
+                        }
+                        offset = args.length - 1;
+                    } else {
+                        out = argumentNode.parser.parse(arg);
+                        if (out == null) { // parser error?
+                            continue;
+                        }
+                        outArray = null;
+                    }
                 } catch (ParserException e) {
                     if (lastError == null || lastError.getPriority() < e.getPriority()) {
                         lastError = new CommandError(e.getPriority(), e.getKey(), e.getArguments());
                     }
                     continue;
                 }
-                if (out == null) {
-                    continue;
-                }
                 for (ArgumentValidator type : argumentNode.type) {
                     try {
-                        type.validate(arg, out);
+                        if (outArray != null) {
+                            for (Object o : outArray) {
+                                type.validate(arg, o);
+                            }
+                        } else {
+                            type.validate(arg, out);
+                        }
                     } catch (ParserException e) {
                         if (lastError == null || lastError.getPriority() < e.getPriority()) {
                             lastError = new CommandError(e.getPriority(), e.getKey(), e.getArguments());

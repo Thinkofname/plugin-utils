@@ -27,9 +27,12 @@ class ArgumentNode {
     final ArgumentValidator[] type;
     final CommandNode node = new CommandNode();
 
-    ArgumentNode(ArgumentParser parser, ArgumentValidator[] type) {
+    final Class<?> varargsType;
+
+    ArgumentNode(ArgumentParser parser, ArgumentValidator[] type, Class<?> varargsType) {
         this.parser = parser;
         this.type = type;
+        this.varargsType = varargsType;
     }
 
     @Override
