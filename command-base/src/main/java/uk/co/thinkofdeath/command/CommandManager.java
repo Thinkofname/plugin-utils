@@ -26,6 +26,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -217,11 +218,10 @@ public class CommandManager {
         // handling classes to be produced without exposing
         // the methods publicly (e.g. for a plugin with an
         // API)
-        for (Method method : commandHandler.getClass().getDeclaredMethods()) {
+        for (Method method : collectAnnotatedMethods(commandHandler.getClass())) {
             Command command = method.getAnnotation(Command.class);
-            if (command == null) {
-                continue;
-            }
+            assert command != null; // checked in collectAnnotatedMethods
+
             method.setAccessible(true); // It may be private
             if (method.getParameterTypes().length < 1) {
                 // No way to actually check if the argument is a caller
@@ -325,6 +325,50 @@ public class CommandManager {
                             commandHandler,
                             argumentValidators,
                             argumentPositions));
+        }
+    }
+
+    /**
+     * Collects all methods annotated with Command in a list and returns it. If a method is overridden and both the
+     * overridden and the overriding method are annotated, only the topmost (most specific) is returned. Classes always
+     * take priority over interfaces when deciding which method and thus which Command annotation should be used.
+     *
+     * To compare methods, method name and parameter types are returned; return type is assumed to be irrelevant.
+     * Additionally, private methods are not overridable: if a method of the same signature exists in a subclass both
+     * are returned.
+     */
+    private static List<Method> collectAnnotatedMethods(Class<?> of) {
+        List<Method> collected = new ArrayList<>();
+        collectAnnotatedMethods(collected, of);
+        return collected;
+    }
+
+    private static void collectAnnotatedMethods(List<Method> target, Class<?> of) {
+        if (of == null) { // top of tree (parent of Object or parent of an interface)
+            return;
+        }
+
+        outer:
+        for (Method method : of.getDeclaredMethods()) {
+            if (method.getAnnotation(Command.class) == null) {
+                continue;
+            }
+            if (!Modifier.isPrivate(method.getModifiers())) {
+                // check if the method is already defined
+                for (Method other : target) {
+                    if (other.getName().equals(method.getName()) &&
+                        Arrays.equals(other.getParameterTypes(), method.getParameterTypes())) {
+                        continue outer;
+                    }
+                }
+            }
+            target.add(method);
+        }
+
+        // recurse into parents
+        collectAnnotatedMethods(target, of.getSuperclass());
+        for (Class<?> interf : of.getInterfaces()) {
+            collectAnnotatedMethods(target, interf);
         }
     }
 
