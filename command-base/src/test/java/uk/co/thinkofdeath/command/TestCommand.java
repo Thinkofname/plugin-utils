@@ -16,6 +16,7 @@
 
 package uk.co.thinkofdeath.command;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -65,6 +66,41 @@ public class TestCommand {
 
             }
         });
+    }
+
+    @Test
+    public void executeMultipleBasic() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        final AtomicInteger callCount = new AtomicInteger();
+        commandManager.register(new CommandHandler() {
+            // wrapping @Command with @Commands here so we can compile on < java 8, should be the same on runtime as
+            // multiple @Command annotations in java 8
+            @Commands({ @Command("a"), @Command("b") })
+            public void test(String sender) {
+                callCount.incrementAndGet();
+            }
+        });
+        commandManager.execute("", "a");
+        commandManager.execute("", "b");
+        assertEquals(2, callCount.get());
+    }
+
+    @Test
+    public void executeMultipleComplex() throws CommandException {
+        CommandManager commandManager = new CommandManager();
+        final AtomicInteger callCount = new AtomicInteger();
+        commandManager.register(new CommandHandler() {
+            // wrapping @Command with @Commands here so we can compile on < java 8, should be the same on runtime as
+            // multiple @Command annotations in java 8
+            @Commands({ @Command("a ?"), @Command("b ?") })
+            public void test(String sender, int arg) {
+                callCount.incrementAndGet();
+                assertEquals(callCount.get(), arg);
+            }
+        });
+        commandManager.execute("", "a 1");
+        commandManager.execute("", "b 2");
+        assertEquals(2, callCount.get());
     }
 
     @Test(expected = CommandRegisterException.class)
