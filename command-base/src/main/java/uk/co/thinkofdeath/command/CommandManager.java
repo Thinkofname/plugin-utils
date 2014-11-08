@@ -219,8 +219,13 @@ public class CommandManager {
         // the methods publicly (e.g. for a plugin with an
         // API)
         for (Method method : collectAnnotatedMethods(commandHandler.getClass())) {
-            Command command = method.getAnnotation(Command.class);
-            assert command != null; // checked in collectAnnotatedMethods
+            Command[] commands;
+            Command singleAnnotation = method.getAnnotation(Command.class);
+            if (singleAnnotation == null) {
+                commands = method.getAnnotation(Commands.class).value();
+            } else {
+                commands = new Command[]{ singleAnnotation };
+            }
 
             method.setAccessible(true); // It may be private
             if (method.getParameterTypes().length < 1) {
@@ -230,108 +235,111 @@ public class CommandManager {
                 throw new CommandRegisterException("You must have a 'caller' argument");
             }
 
-            String[] args = localeHandler.getCommand(command.value()).split("\\s");
             Class<?>[] methodArgs = method.getParameterTypes();
             Annotation[][] methodArgAnnotations = method.getParameterAnnotations();
-            int argIndex = 1; // Skip the 'caller' argument
-            int[] argumentPositions = new int[methodArgs.length];
 
-            // This starts at the at the root node and
-            // searches/creates branches until it reaches
-            // its end where it places the method to be
-            // called later
-            CommandNode currentNode = rootNode;
-            for (int i = 0; i < args.length; i++) {
-                String arg = args[i];
-                if (arg.startsWith("?")) { // Dynamic argument
-                    int index;
-                    if (arg.equals("?")) {
-                        index = argIndex;
-                    } else {
-                        index = Integer.parseInt(arg.substring(1));
-                        if (index >= methodArgs.length && index < 1) {
-                            throw new CommandRegisterException("Invalid explicit argument position");
-                        }
-                    }
-                    if (argIndex >= methodArgs.length) {
-                        throw new CommandRegisterException("Incorrect number of method parameters");
-                    }
-                    Class<?> argType = methodArgs[index];
-
-                    boolean varargs;
-                    if (method.isVarArgs() && methodArgs.length == index + 1) {
-                        for (int j = i + 1; j < args.length; j++) {
-                            if (!args[j].isEmpty()) {
-                                throw new CommandRegisterException("Varargs needs to be last argument!");
+            for (Command command : commands) {
+                String[] args = localeHandler.getCommand(command.value()).split("\\s");
+                int argIndex = 1; // Skip the 'caller' argument
+                int[] argumentPositions = new int[methodArgs.length];
+                // This starts at the at the root node and
+                // searches/creates branches until it reaches
+                // its end where it places the method to be
+                // called later
+                CommandNode currentNode = rootNode;
+                for (int i = 0; i < args.length; i++) {
+                    String arg = args[i];
+                    if (arg.startsWith("?")) { // Dynamic argument
+                        int index;
+                        if (arg.equals("?")) {
+                            index = argIndex;
+                        } else {
+                            index = Integer.parseInt(arg.substring(1));
+                            if (index >= methodArgs.length && index < 1) {
+                                throw new CommandRegisterException("Invalid explicit argument position");
                             }
                         }
-                        assert argType.isArray(); // otherwise varargs wouldn't really make sense
-                        argType = argType.getComponentType();
-                        varargs = true;
-                    } else {
-                        varargs = false;
-                    }
+                        if (argIndex >= methodArgs.length) {
+                            throw new CommandRegisterException("Incorrect number of method parameters");
+                        }
+                        Class<?> argType = methodArgs[index];
 
-                    ArgumentParser parser = parsers.get(argType);
-                    if (parser == null) {
-                        throw new CommandRegisterException("No parser for " + argType.getSimpleName());
-                    }
-                    // Obtain the annotations with argument validators and create
-                    // instances of them using the annotation as the arguments
-                    Annotation[] annotations = methodArgAnnotations[index];
-                    ArgumentValidator[] argCheckers = processCommandAnnotations(argType, annotations);
+                        boolean varargs;
+                        if (method.isVarArgs() && methodArgs.length == index + 1) {
+                            for (int j = i + 1; j < args.length; j++) {
+                                if (!args[j].isEmpty()) {
+                                    throw new CommandRegisterException("Varargs needs to be last argument!");
+                                }
+                            }
+                            assert argType.isArray(); // otherwise varargs wouldn't really make sense
+                            argType = argType.getComponentType();
+                            varargs = true;
+                        } else {
+                            varargs = false;
+                        }
 
-                    ArgumentNode argumentNode = new ArgumentNode(parser, argCheckers, varargs ? argType : null);
-                    currentNode.arguments.add(argumentNode);
-                    // Branch into the node
-                    currentNode = argumentNode.node;
-                    // Save the location of the argument
-                    argumentPositions[argIndex] = index;
-                    argIndex++;
-                } else { // Constant
-                    arg = arg.toLowerCase(); // We don't care about case for sub commands
-                    if (!currentNode.subCommands.containsKey(arg)) {
-                        // Creates the branch if it doesn't exist
-                        currentNode.subCommands.put(arg, new CommandNode());
+                        ArgumentParser parser = parsers.get(argType);
+                        if (parser == null) {
+                            throw new CommandRegisterException("No parser for " + argType.getSimpleName());
+                        }
+                        // Obtain the annotations with argument validators and create
+                        // instances of them using the annotation as the arguments
+                        Annotation[] annotations = methodArgAnnotations[index];
+                        ArgumentValidator[] argCheckers = processCommandAnnotations(argType, annotations);
+
+                        ArgumentNode argumentNode = new ArgumentNode(parser, argCheckers, varargs ? argType : null);
+                        currentNode.arguments.add(argumentNode);
+                        // Branch into the node
+                        currentNode = argumentNode.node;
+                        // Save the location of the argument
+                        argumentPositions[argIndex] = index;
+                        argIndex++;
+                    } else { // Constant
+                        arg = arg.toLowerCase(); // We don't care about case for sub commands
+                        if (!currentNode.subCommands.containsKey(arg)) {
+                            // Creates the branch if it doesn't exist
+                            currentNode.subCommands.put(arg, new CommandNode());
+                        }
+                        // Branch into the node
+                        currentNode = currentNode.subCommands.get(arg);
                     }
-                    // Branch into the node
-                    currentNode = currentNode.subCommands.get(arg);
                 }
+
+                // Either we have left over '?' or not enough
+                if (argIndex != methodArgs.length) {
+                    throw new CommandRegisterException("Incorrect number of method parameters");
+                }
+
+                // If we followed the route and got to a node with a method already then
+                // another command has the same signature
+                if (currentNode.methods.containsKey(methodArgs[0])) {
+                    throw new CommandRegisterException("Duplicate command");
+                }
+
+                ArgumentValidator[] argumentValidators1 = processCommandAnnotations(methodArgs[0],
+                        methodArgAnnotations[0]);
+                ArgumentValidator[] argumentValidators2 = processCommandAnnotations(methodArgs[0],
+                        method.getAnnotations());
+
+                ArgumentValidator[] argumentValidators = new ArgumentValidator[argumentValidators1.length + argumentValidators2.length];
+                System.arraycopy(argumentValidators1, 0, argumentValidators, 0, argumentValidators1.length);
+                System.arraycopy(argumentValidators2, 0, argumentValidators, argumentValidators1.length, argumentValidators2.length);
+
+                currentNode.methods.put(methodArgs[0],
+                        new CommandNode.CommandMethod(
+                                method,
+                                commandHandler,
+                                argumentValidators,
+                                argumentPositions));
             }
-
-            // Either we have left over '?' or not enough
-            if (argIndex != methodArgs.length) {
-                throw new CommandRegisterException("Incorrect number of method parameters");
-            }
-
-            // If we followed the route and got to a node with a method already then
-            // another command has the same signature
-            if (currentNode.methods.containsKey(methodArgs[0])) {
-                throw new CommandRegisterException("Duplicate command");
-            }
-
-            ArgumentValidator[] argumentValidators1 = processCommandAnnotations(methodArgs[0],
-                    methodArgAnnotations[0]);
-            ArgumentValidator[] argumentValidators2 = processCommandAnnotations(methodArgs[0],
-                    method.getAnnotations());
-
-            ArgumentValidator[] argumentValidators = new ArgumentValidator[argumentValidators1.length + argumentValidators2.length];
-            System.arraycopy(argumentValidators1, 0, argumentValidators, 0, argumentValidators1.length);
-            System.arraycopy(argumentValidators2, 0, argumentValidators, argumentValidators1.length, argumentValidators2.length);
-
-            currentNode.methods.put(methodArgs[0],
-                    new CommandNode.CommandMethod(
-                            method,
-                            commandHandler,
-                            argumentValidators,
-                            argumentPositions));
         }
     }
 
     /**
-     * Collects all methods annotated with Command in a list and returns it. If a method is overridden and both the
-     * overridden and the overriding method are annotated, only the topmost (most specific) is returned. Classes always
-     * take priority over interfaces when deciding which method and thus which Command annotation should be used.
+     * Collects all methods annotated with Command (or Commands) in a list and returns it. If a method is overridden
+     * and both the overridden and the overriding method are annotated, only the topmost (most specific) is returned.
+     * Classes always take priority over interfaces when deciding which method and thus which Command annotation
+     * should be used.
      *
      * To compare methods, method name and parameter types are returned; return type is assumed to be irrelevant.
      * Additionally, private methods are not overridable: if a method of the same signature exists in a subclass both
@@ -350,7 +358,7 @@ public class CommandManager {
 
         outer:
         for (Method method : of.getDeclaredMethods()) {
-            if (method.getAnnotation(Command.class) == null) {
+            if (method.getAnnotation(Command.class) == null && method.getAnnotation(Commands.class) == null) {
                 continue;
             }
             if (!Modifier.isPrivate(method.getModifiers())) {

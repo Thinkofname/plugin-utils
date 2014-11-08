@@ -16,10 +16,7 @@
 
 package uk.co.thinkofdeath.command;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Used to annotate methods as commands where the value of this annotation should be the syntax of command required to execute.
@@ -28,6 +25,9 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
+// Note that @Repeatable is a java 8 feature and class. The JVM will ignore this annotation in that case so it is still
+// backwards compatible.
+@Repeatable(Commands.class)
 public @interface Command {
     /**
      * The syntax of the command required
